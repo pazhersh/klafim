@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-import { getNormalizedPosition } from './utils.js'
+import { Raycaster } from './raycaster.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -28,43 +28,19 @@ const light = new THREE.HemisphereLight(skyColor, groundColor, 1);
 scene.add(light);
 
 const orbitControls = new OrbitControls(camera, canvasElement);
+camera.position.z = 5;
 
 const gridHelper = new THREE.GridHelper(10, 10);
 scene.add(gridHelper);
-camera.position.z = 5;
 
 function animate() {
   renderer.render(scene, camera);
 }
 renderer.setAnimationLoop(animate);
 
-const raycaster = new THREE.Raycaster();
-function getElementsAtPosition({ x, y }) {
-  const normalizedPosition = getNormalizedPosition({
-    x,
-    y,
-    width: canvasElement.width,
-    height: canvasElement.height
-  });
-  raycaster.setFromCamera(normalizedPosition, camera);
-  return raycaster.intersectObjects(scene.children).filter(item => sceneObjects.includes(item.object));
-}
-
-function getPointedElement(event) {
-  const { offsetX: x, offsetY: y } = event;
-  const intersections = getElementsAtPosition({ x, y });
-
-  if (!intersections.length) {
-    return undefined;
-  }
-
-  const relevantIntersecttion = intersections.reduce((closestElement, currentElement) =>
-    currentElement.distance < closestElement?.distance ? currentElement : closestElement
-  );
-  return relevantIntersecttion.object;
-}
+const raycaster = new Raycaster(camera, sceneObjects, canvasElement)
 
 canvasElement.addEventListener('mousedown', (event) => {
-  const selectedElement = getPointedElement(event);
+  const selectedElement = raycaster.getPointedElement(event);
   console.log(selectedElement);
 })
