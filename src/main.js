@@ -16,8 +16,11 @@ document.body.appendChild(canvasElement);
 const loader = new GLTFLoader();
 const deckGLTF = await loader.loadAsync('/assets/deck.glb');
 
-const deck = deckGLTF.scene;
-scene.add(deck);
+const deck = deckGLTF.scene.children[0]; // not the cleanest but hey, it's just a side-project
+
+const sceneObjects = [deck];
+
+scene.add(...sceneObjects);
 
 const skyColor = 0xFFFFFF;
 const groundColor = 0x101010;
@@ -44,12 +47,24 @@ function getElementsAtPosition({ x, y }) {
     height: canvasElement.height
   });
   raycaster.setFromCamera(normalizedPosition, camera);
-  return raycaster.intersectObjects(scene.children);
+  return raycaster.intersectObjects(scene.children).filter(item => sceneObjects.includes(item.object));
+}
+
+function getPointedElement(event) {
+  const { offsetX: x, offsetY: y } = event;
+  const intersections = getElementsAtPosition({ x, y });
+
+  if (!intersections.length) {
+    return undefined;
+  }
+
+  const relevantIntersecttion = intersections.reduce((closestElement, currentElement) =>
+    currentElement.distance < closestElement?.distance ? currentElement : closestElement
+  );
+  return relevantIntersecttion.object;
 }
 
 canvasElement.addEventListener('mousedown', (event) => {
-  const { offsetX: x, offsetY: y } = event;
-  const intersections = getElementsAtPosition({ x, y });
-  const filterred = intersections.filter(item => !item.object.type.includes('Helper'));
-  console.log(filterred);
+  const selectedElement = getPointedElement(event);
+  console.log(selectedElement);
 })
