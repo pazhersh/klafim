@@ -95,7 +95,15 @@ canvasElement.addEventListener('mousedown', (event) => {
 
 
 const element = new Card();
+sceneObjects.push(element.mesh);
+canvasElement.addEventListener('mousedown', (event) => {
+  const intersection = raycaster.getPointedElement(event);
+  const selectedElement = intersection?.object;
 
+  if (selectedElement === element.mesh) {
+    element.onClick(intersection.point);
+  }
+})
 
 // // Feels like this should be on of the animation function, but it breaks the physics for some reason
 // const clock = new THREE.Clock()
