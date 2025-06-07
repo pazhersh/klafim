@@ -8,15 +8,19 @@ export class Card {
         this.mesh = new THREE.Mesh(meshGeometry, meshMaterial);
         scene.add(this.mesh);
 
-        const physicsDesc = RAPIER.RigidBodyDesc.dynamic().setTranslation(0.0, 1.0, 0.0);
-        const physicsShape = RAPIER.ColliderDesc.cuboid(1, 1, 1).setMass(1);
-        this.physicsBody = world.createRigidBody(physicsDesc);
-        world.createCollider(physicsShape, this.physicsBody);
+        const rigidBodyDesc = RAPIER.RigidBodyDesc.dynamic()
+            .setTranslation(0.0, 1.0, 0.0);
+
+        this.rigidBody = world.createRigidBody(rigidBodyDesc);
+        const colliderDesc = RAPIER.ColliderDesc.cuboid(1.0, 1.0, 1.0);
+        world.createCollider(colliderDesc, this.rigidBody);
     }
 
 
     update() {
-        this.mesh.position.copy(this.physicsBody.translation());
-        this.mesh.rotation.copy(this.physicsBody.rotation());
+        const position = this.rigidBody.translation();
+        this.mesh.position.copy(new THREE.Vector3(position.x, position.y, position.z));
+        const rotation = this.rigidBody.rotation();
+        this.mesh.rotation.copy(new THREE.Euler(rotation.x, rotation.y, rotation.z));
     }
 }

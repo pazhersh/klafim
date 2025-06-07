@@ -16,12 +16,8 @@ let world = new RAPIER.World(gravity);
 
 // Create the ground
 const groundBody = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(0, -1, 0))
-const groundShape = RAPIER.ColliderDesc.cuboid(50, 0.5, 50)
-world.createCollider(groundShape, groundBody)
-
-
-
-const rapierDebug = world.debugRender();
+const groundCollider = RAPIER.ColliderDesc.cuboid(50, 0.5, 50)
+world.createCollider(groundCollider, groundBody)
 
 
 
@@ -38,7 +34,7 @@ const canvasElement = renderer.domElement;
 const loader = new GLTFLoader();
 const deckGLTF = await loader.loadAsync('/assets/deck.glb');
 
-const gridHelper = new THREE.GridHelper(10, 10);
+const gridHelper = new THREE.GridHelper(100, 100);
 scene.add(gridHelper);
 
 const deck = deckGLTF.scene.children[0]; // not the cleanest but hey, it's just a side-project
@@ -95,25 +91,21 @@ canvasElement.addEventListener('mousedown', (event) => {
 })
 
 
-const debugMesh = new THREE.LineSegments(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 'lime' }));
-debugMesh.frustrumCulled = false;
-debugMesh.geometry.setAttribute('position', new THREE.BufferAttribute(rapierDebug.vertices, 3));
-debugMesh.visible = true;
-scene.add(debugMesh);
 
 const element = new Card(scene, world);
 
-const clock = new THREE.Clock()
-let delta;
 
+// // Feels like this should be on of the animation function, but it breaks the physics for some reason
+// const clock = new THREE.Clock()
+// let delta;
 function animate() {
   requestAnimationFrame(animate);
 
-  delta = clock.getDelta();
-  world.timestep = delta;
+  // delta = clock.getDelta();
+  // world.timestep = delta;
   world.step();
+  element.update();
 
   renderer.render(scene, camera);
-  element.update();
 }
 renderer.setAnimationLoop(animate);
