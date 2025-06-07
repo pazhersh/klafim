@@ -6,6 +6,7 @@ import { DragControls } from 'three/addons/controls/DragControls.js';
 import { Raycaster } from './raycaster.js';
 
 import RAPIER from '@dimforge/rapier3d-compat/rapier.es.js';
+import { Card } from './card.js';
 
 await RAPIER.init();
 
@@ -100,28 +101,7 @@ debugMesh.geometry.setAttribute('position', new THREE.BufferAttribute(rapierDebu
 debugMesh.visible = true;
 scene.add(debugMesh);
 
-const elementGeometry = new THREE.BoxGeometry(1, 1, 1);
-const elementMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff });
-
-const elementBodyDesc = RAPIER.RigidBodyDesc.dynamic().setTranslation(0.0, 1.0, 0.0);
-const elementBody = world.createRigidBody(elementBodyDesc);
-const elementBodyShape = RAPIER.ColliderDesc.cuboid(1, 1, 1).setMass(1);
-world.createCollider(elementBodyShape, elementBody);
-
-
-const element = {
-  physicsBody: elementBody,
-  mesh: new THREE.Mesh(elementGeometry, elementMaterial)
-}
-
-scene.add(element.mesh);
-
-
-
-function updateElement() {
-  element.mesh.position.copy(element.physicsBody.translation());
-  element.mesh.rotation.copy(element.physicsBody.rotation());
-}
+const element = new Card(scene, world);
 
 const clock = new THREE.Clock()
 let delta;
@@ -134,6 +114,6 @@ function animate() {
   world.step();
 
   renderer.render(scene, camera);
-  updateElement();
+  element.update();
 }
 renderer.setAnimationLoop(animate);
