@@ -31,6 +31,6 @@ export class Raycaster {
         const relevantIntersecttion = intersections.reduce((closestElement, currentElement) =>
             currentElement.distance < closestElement?.distance ? currentElement : closestElement
         );
-        return relevantIntersecttion.object;
+        return relevantIntersecttion;
     }
 }
