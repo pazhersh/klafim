@@ -10,6 +10,7 @@
     "serve": "busybox httpd -f -p 8000"
   },
   "dependencies": {
+    "@dimforge/rapier3d": "^0.17.3",
     "three": "^0.177.0"
   },
   "devDependencies": {
