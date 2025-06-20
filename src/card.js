@@ -9,17 +9,17 @@ export default class Card {
         const meshGeometry = new THREE.BoxGeometry(1, 1, 1);
         const meshMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff });
         this.mesh = new THREE.Mesh(meshGeometry, meshMaterial);
-        document.scene.add(this.mesh);
+        window.scene.add(this.mesh);
 
         const rigidBodyDesc = RAPIER.RigidBodyDesc.dynamic()
             .setTranslation(0.0, 2.0, 0.0);
 
-        this.rigidBody = document.world.createRigidBody(rigidBodyDesc);
+        this.rigidBody = window.world.createRigidBody(rigidBodyDesc);
         const points = this.mesh.geometry.attributes.position.array;
         const colliderDesc = RAPIER.ColliderDesc
             .convexHull(points)
             .setDensity(1.0);
-        document.world.createCollider(colliderDesc, this.rigidBody);
+        window.world.createCollider(colliderDesc, this.rigidBody);
     }
 
     hover(targetPosition) {
