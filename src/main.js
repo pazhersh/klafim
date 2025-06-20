@@ -10,9 +10,7 @@ import RapierDebuger from './rapierDebugger.js';
 
 await RAPIER.init();
 
-// Use the RAPIER module here.
 let gravity = { x: 0.0, y: -9.81, z: 0.0 };
-// let gravity = { x: 0.0, y: 0, z: 0.0 };
 window.world = new RAPIER.World(gravity);
 
 window.scene = new THREE.Scene();
@@ -59,17 +57,15 @@ canvasElement.addEventListener('mousedown', (event) => {
   // }
 })
 
+const cardHeight = cardBoundingBox.max.y;
+const deck = Array.from({ length: 52 }).map((_, index) => {
+  const card = new Card();
+  card.rigidBody.setTranslation({ x: 0, y: index * cardHeight, z: 0 });
+  card.setLocked(true);
+  return card;
+})
 
-
-const card = new Card();
-card.rigidBody.setTranslation({ x: 0, y: 0, z: 0 });
-card.setLocked(true);
-elementsToListen.push(card);
-
-const card2 = new Card();
-card2.rigidBody.setTranslation({ x: 0, y: cardBoundingBox.max.y, z: 0 })
-card2.setLocked(true);
-elementsToListen.push(card2);
+elementsToListen.push(...deck);
 
 let currentSelectedElement;
 
@@ -92,7 +88,7 @@ canvasElement.addEventListener('mouseup', (event) => {
 })
 
 
-window.debugger = new RapierDebuger();
+// window.debugger = new RapierDebuger();
 
 // // Feels like this should be on of the animation function, but it breaks the physics for some reason
 // const clock = new THREE.Clock()
@@ -104,7 +100,7 @@ function animate() {
   // window.world.timestep = delta;
   window.world.step();
   elementsToListen.forEach(element => element?.update());
-  window.debugger.update();
+  window.debugger?.update();
   renderer.render(window.scene, camera);
 }
 renderer.setAnimationLoop(animate);
