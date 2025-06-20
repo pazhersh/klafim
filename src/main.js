@@ -6,20 +6,21 @@ import { DragControls } from 'three/addons/controls/DragControls.js';
 import { Raycaster } from './raycaster.js';
 
 import RAPIER from '@dimforge/rapier3d-compat/rapier.es.js';
-import { Card } from './card.js';
+import Card from './card.js';
+import RapierDebuger from './rapierDebugger.js'
 
 await RAPIER.init();
 
 // Use the RAPIER module here.
 let gravity = { x: 0.0, y: -9.81, z: 0.0 };
+// let gravity = { x: 0.0, y: 0, z: 0.0 };
 let world = new RAPIER.World(gravity);
 document.world = world;
 
 // Create the ground
-const groundBody = document.world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(0, -1, 0))
-const groundCollider = RAPIER.ColliderDesc.cuboid(50, 0.5, 50)
-document.world.createCollider(groundCollider, groundBody)
-
+const groundBody = document.world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(0.0, -0.5, 0.0));
+const groundCollider = RAPIER.ColliderDesc.cuboid(50, 0.5, 50);
+document.world.createCollider(groundCollider, groundBody);
 
 
 
@@ -67,20 +68,6 @@ canvasElement.addEventListener('mousemove', (event) => {
 
 const dragControls = new DragControls(cards, camera, canvasElement);
 
-function addCard(position) {
-  const cardGeometry = new THREE.BoxGeometry(1, 1, 1);
-  const cardMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-  const card = new THREE.Mesh(cardGeometry, cardMaterial);
-  // card.position.set(position ?? new THREE.Vector3(0, 0, 0));
-
-  document.scene.add(card);
-  sceneObjects.push(card);
-  cards.push(card);
-
-  dragControls.update();
-
-  return card;
-}
 
 canvasElement.addEventListener('mousedown', (event) => {
   const intersection = raycaster.getPointedElement(event);
@@ -104,6 +91,15 @@ canvasElement.addEventListener('mousedown', (event) => {
     element.onClick(intersection.point);
   }
 })
+canvasElement.addEventListener('mousemove', (event) => {
+  element.onRelease();
+})
+canvasElement.addEventListener('mouseup', (event) => {
+  element.onRelease();
+})
+
+
+const debuger = new RapierDebuger();
 
 // // Feels like this should be on of the animation function, but it breaks the physics for some reason
 // const clock = new THREE.Clock()
@@ -115,7 +111,7 @@ function animate() {
   // document.world.timestep = delta;
   document.world.step();
   element.update();
-
+  debuger.update();
   renderer.render(document.scene, camera);
 }
 renderer.setAnimationLoop(animate);

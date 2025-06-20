@@ -71,9 +71,10 @@ export default class Card {
         // }, 250);
     }
     onDrag(position) {
-
+        this.targetMovement.copy(position);
     }
     onRelease(position) {
-
+        this.wasClicked = false
+        this.rigidBody.setGravityScale(1);
     }
 }
