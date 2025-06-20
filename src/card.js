@@ -5,6 +5,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 const loader = new GLTFLoader();
 const cardGLTF = await loader.loadAsync('/assets/deck.glb');
 const cardMesh = cardGLTF.scene.children[0]; // not the cleanest but hey, it's just a side-project
+export const boundingBox = cardMesh.geometry.boundingBox.clone();
 
 export default class Card {
     wasClicked = false;
@@ -42,6 +43,7 @@ export default class Card {
                 .multiplyScalar(1) // Drag coefficient
                 .multiplyScalar(1) // cross sectional area
                 .multiplyScalar(-1) // against the movement direction
+            ;
 
         const totalForce = velocityVector.clone().add(movementForce);
         // console.log(force, dragVector);
@@ -81,5 +83,9 @@ export default class Card {
     onRelease(position) {
         this.wasClicked = false
         this.rigidBody.setGravityScale(1);
+    }
+    setLocked(lock) {
+        this.rigidBody.lockRotations(lock);
+        this.rigidBody.lockTranslations(lock);
     }
 }

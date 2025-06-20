@@ -1,14 +1,12 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { DragControls } from 'three/addons/controls/DragControls.js';
 
 import { Raycaster } from './raycaster.js';
 
 import RAPIER from '@dimforge/rapier3d-compat/rapier.es.js';
-import Card from './card.js';
-import RapierDebuger from './rapierDebugger.js'
+import Card, { boundingBox as cardBoundingBox } from './card.js';
 import Ground from './ground.js';
+import RapierDebuger from './rapierDebugger.js';
 
 await RAPIER.init();
 
@@ -30,15 +28,6 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 const canvasElement = renderer.domElement;
-
-// const loader = new GLTFLoader();
-// const deckGLTF = await loader.loadAsync('/assets/deck.glb');
-
-// const deck = deckGLTF.scene.children[0]; // not the cleanest but hey, it's just a side-project
-
-// const sceneObjects = [deck];
-
-// window.scene.add(...sceneObjects);
 
 const skyColor = 0xFFFFFF;
 const groundColor = 0x101010;
@@ -73,27 +62,33 @@ canvasElement.addEventListener('mousedown', (event) => {
 
 
 const card = new Card();
-card.rigidBody.setTranslation({ x: 0, y: 1, z: 0 })
+card.rigidBody.setTranslation({ x: 0, y: 0, z: 0 });
+card.setLocked(true);
 elementsToListen.push(card);
 
 const card2 = new Card();
-card2.rigidBody.setTranslation({ x: 0, y: 2, z: 0 })
+card2.rigidBody.setTranslation({ x: 0, y: cardBoundingBox.max.y, z: 0 })
+card2.setLocked(true);
 elementsToListen.push(card2);
+
+let currentSelectedElement;
 
 canvasElement.addEventListener('mousedown', (event) => {
   const intersection = raycaster.getPointedElement(event);
   const intersectedMesh = intersection?.object;
-  const selectedObject = elementsToListen.find(element => element.mesh === intersectedMesh);
+  const selectedElement = elementsToListen.find(element => element.mesh === intersectedMesh);
 
-  if (selectedObject) {
-    selectedObject?.onClick(intersection.point);
+  if (selectedElement) {
+    selectedElement?.onClick?.(intersection.point);
+    currentSelectedElement = selectedElement
   }
 })
 canvasElement.addEventListener('mousemove', (event) => {
-  elementsToListen.forEach(element => element?.onDrag());
+  currentSelectedElement?.onDrag?.();
 })
 canvasElement.addEventListener('mouseup', (event) => {
-  elementsToListen.forEach(element => element?.onRelease());
+  currentSelectedElement?.onRelease?.();
+  currentSelectedElement = null;
 })
 
 
@@ -113,3 +108,5 @@ function animate() {
   renderer.render(window.scene, camera);
 }
 renderer.setAnimationLoop(animate);
+
+window.card = card2;
