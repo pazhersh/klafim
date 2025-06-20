@@ -2,10 +2,9 @@ import { Raycaster as ThreeRaycaster } from 'three';
 import { getNormalizedPosition } from './utils.js'
 
 export class Raycaster {
-    constructor(camera, relevantObjects, canvasElement) {
+    constructor(camera, canvasElement) {
         this.caster = new ThreeRaycaster();
         this.camera = camera;
-        this.relevantObjects = relevantObjects;
         this.canvasElement = canvasElement;
     }
 
@@ -17,7 +16,8 @@ export class Raycaster {
             height: this.canvasElement.height
         });
         this.caster.setFromCamera(normalizedPosition, this.camera);
-        return this.caster.intersectObjects(this.relevantObjects);
+        const relevantMeshes = window.scene.children.filter(mesh => mesh !== window.debugger?.mesh);
+        return this.caster.intersectObjects(relevantMeshes);
     }
 
     getPointedElement(event) {

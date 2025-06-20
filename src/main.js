@@ -19,6 +19,8 @@ window.world = new RAPIER.World(gravity);
 
 window.scene = new THREE.Scene();
 
+const elementsToListen = [];
+
 new Ground();
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -29,18 +31,14 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 const canvasElement = renderer.domElement;
 
-const loader = new GLTFLoader();
-const deckGLTF = await loader.loadAsync('/assets/deck.glb');
+// const loader = new GLTFLoader();
+// const deckGLTF = await loader.loadAsync('/assets/deck.glb');
 
-const gridHelper = new THREE.GridHelper(100, 100);
-window.scene.add(gridHelper);
+// const deck = deckGLTF.scene.children[0]; // not the cleanest but hey, it's just a side-project
 
-const deck = deckGLTF.scene.children[0]; // not the cleanest but hey, it's just a side-project
-const cards = [];
+// const sceneObjects = [deck];
 
-const sceneObjects = [deck];
-
-window.scene.add(...sceneObjects);
+// window.scene.add(...sceneObjects);
 
 const skyColor = 0xFFFFFF;
 const groundColor = 0x101010;
@@ -49,7 +47,7 @@ window.scene.add(light);
 
 document.body.appendChild(canvasElement);
 
-const raycaster = new Raycaster(camera, sceneObjects, canvasElement)
+const raycaster = new Raycaster(camera, canvasElement)
 
 const orbitControls = new OrbitControls(camera, canvasElement);
 let isOrbiting = false;
@@ -61,40 +59,41 @@ canvasElement.addEventListener('mousemove', (event) => {
     orbitControls.enabled = !Boolean(selectedElement);
 })
 
-const dragControls = new DragControls(cards, camera, canvasElement);
-
 
 canvasElement.addEventListener('mousedown', (event) => {
   const intersection = raycaster.getPointedElement(event);
   const selectedElement = intersection?.object;
 
-  if (selectedElement === deck) {
-    const newCard = addCard(intersection.position);
-    console.log(newCard);
-  }
+  // if (selectedElement === deck) {
+  //   const newCard = addCard(intersection.position);
+  //   console.log(newCard);
+  // }
 })
 
 
 
-const element = new Card();
-sceneObjects.push(element.mesh);
+const cubeCard = new Card();
+
+elementsToListen.push(cubeCard);
+// sceneObjects.push(element.mesh);
 canvasElement.addEventListener('mousedown', (event) => {
   const intersection = raycaster.getPointedElement(event);
-  const selectedElement = intersection?.object;
+  const intersectedMesh = intersection?.object;
+  const selectedObject = elementsToListen.find(element => element.mesh === intersectedMesh);
 
-  if (selectedElement === element.mesh) {
-    element.onClick(intersection.point);
+  if (selectedObject) {
+    selectedObject?.onClick(intersection.point);
   }
 })
 canvasElement.addEventListener('mousemove', (event) => {
-  element.onRelease();
+  elementsToListen.forEach(element => element?.onDrag());
 })
 canvasElement.addEventListener('mouseup', (event) => {
-  element.onRelease();
+  elementsToListen.forEach(element => element?.onRelease());
 })
 
 
-const debuger = new RapierDebuger();
+window.debugger = new RapierDebuger();
 
 // // Feels like this should be on of the animation function, but it breaks the physics for some reason
 // const clock = new THREE.Clock()
@@ -105,8 +104,8 @@ function animate() {
   // delta = clock.getDelta();
   // window.world.timestep = delta;
   window.world.step();
-  element.update();
-  debuger.update();
+  elementsToListen.forEach(element => element?.update());
+  window.debugger.update();
   renderer.render(window.scene, camera);
 }
 renderer.setAnimationLoop(animate);

@@ -3,8 +3,8 @@ import RAPIER from '@dimforge/rapier3d-compat/rapier.es.js';
 
 export default class Ground {
     constructor() {
-        const meshGeometry = new THREE.PlaneGeometry(100, 100);
-        meshGeometry.rotateX(Math.PI / 2 * -1);
+        const meshGeometry = new THREE.PlaneGeometry(100, 100)
+            .rotateX(Math.PI / 2 * -1);
         const meshMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
         this.mesh = new THREE.Mesh(meshGeometry, meshMaterial);
         window.scene.add(this.mesh);

@@ -4,6 +4,8 @@ import RAPIER from '@dimforge/rapier3d-compat/rapier.es.js';
 export default class Card {
     wasClicked = false;
     targetMovement = new THREE.Vector3();
+    mesh;
+    rigidBody;
 
     constructor() {
         const meshGeometry = new THREE.BoxGeometry(1, 1, 1);
