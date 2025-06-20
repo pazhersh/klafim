@@ -8,23 +8,18 @@ import { Raycaster } from './raycaster.js';
 import RAPIER from '@dimforge/rapier3d-compat/rapier.es.js';
 import Card from './card.js';
 import RapierDebuger from './rapierDebugger.js'
+import Ground from './ground.js';
 
 await RAPIER.init();
 
 // Use the RAPIER module here.
 let gravity = { x: 0.0, y: -9.81, z: 0.0 };
 // let gravity = { x: 0.0, y: 0, z: 0.0 };
-let world = new RAPIER.World(gravity);
-window.world = world;
-
-// Create the ground
-const groundBody = window.world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(0.0, -0.5, 0.0));
-const groundCollider = RAPIER.ColliderDesc.cuboid(50, 0.5, 50);
-window.world.createCollider(groundCollider, groundBody);
-
-
+window.world = new RAPIER.World(gravity);
 
 window.scene = new THREE.Scene();
+
+new Ground();
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.z = 5;
