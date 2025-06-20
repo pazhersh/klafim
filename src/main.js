@@ -17,7 +17,7 @@ window.scene = new THREE.Scene();
 
 const elementsToListen = [];
 
-new Ground();
+const ground = new Ground();
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.z = 5;
@@ -58,10 +58,10 @@ canvasElement.addEventListener('mousedown', (event) => {
 })
 
 const cardHeight = cardBoundingBox.max.y;
-const deck = Array.from({ length: 52 }).map((_, index) => {
+const deck = Array.from({ length: 1 }).map((_, index) => {
   const card = new Card();
   card.rigidBody.setTranslation({ x: 0, y: index * cardHeight, z: 0 });
-  card.setLocked(true);
+  // card.setLocked(true);
   return card;
 })
 
@@ -80,7 +80,8 @@ canvasElement.addEventListener('mousedown', (event) => {
   }
 })
 canvasElement.addEventListener('mousemove', (event) => {
-  currentSelectedElement?.onDrag?.();
+  const groundIntersection = raycaster.getIntersectionWith(ground.mesh);
+  currentSelectedElement?.onDrag?.(groundIntersection[0].point);
 })
 canvasElement.addEventListener('mouseup', (event) => {
   currentSelectedElement?.onRelease?.();
@@ -104,5 +105,3 @@ function animate() {
   renderer.render(window.scene, camera);
 }
 renderer.setAnimationLoop(animate);
-
-window.card = card2;

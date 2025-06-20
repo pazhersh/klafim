@@ -78,7 +78,7 @@ export default class Card {
         // }, 250);
     }
     onDrag(position) {
-        this.targetMovement.copy(position);
+        this.targetMovement.copy(position).setY(1);
     }
     onRelease(position) {
         this.wasClicked = false

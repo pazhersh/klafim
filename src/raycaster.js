@@ -33,4 +33,8 @@ export class Raycaster {
         );
         return relevantIntersecttion;
     }
+
+    getIntersectionWith(mesh) {
+        return this.caster.intersectObjects([mesh]);
+    }
 }
