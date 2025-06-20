@@ -72,10 +72,14 @@ canvasElement.addEventListener('mousedown', (event) => {
 
 
 
-const cubeCard = new Card();
+const card = new Card();
+card.rigidBody.setTranslation({ x: 0, y: 1, z: 0 })
+elementsToListen.push(card);
 
-elementsToListen.push(cubeCard);
-// sceneObjects.push(element.mesh);
+const card2 = new Card();
+card2.rigidBody.setTranslation({ x: 0, y: 2, z: 0 })
+elementsToListen.push(card2);
+
 canvasElement.addEventListener('mousedown', (event) => {
   const intersection = raycaster.getPointedElement(event);
   const intersectedMesh = intersection?.object;

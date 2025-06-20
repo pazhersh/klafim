@@ -1,5 +1,10 @@
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat/rapier.es.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const loader = new GLTFLoader();
+const cardGLTF = await loader.loadAsync('/assets/deck.glb');
+const cardMesh = cardGLTF.scene.children[0]; // not the cleanest but hey, it's just a side-project
 
 export default class Card {
     wasClicked = false;
@@ -8,13 +13,10 @@ export default class Card {
     rigidBody;
 
     constructor() {
-        const meshGeometry = new THREE.BoxGeometry(1, 1, 1);
-        const meshMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff });
-        this.mesh = new THREE.Mesh(meshGeometry, meshMaterial);
+        this.mesh = cardMesh.clone();
         window.scene.add(this.mesh);
 
-        const rigidBodyDesc = RAPIER.RigidBodyDesc.dynamic()
-            .setTranslation(0.0, 2.0, 0.0);
+        const rigidBodyDesc = RAPIER.RigidBodyDesc.dynamic();
 
         this.rigidBody = window.world.createRigidBody(rigidBodyDesc);
         const points = this.mesh.geometry.attributes.position.array;
