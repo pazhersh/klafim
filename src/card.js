@@ -3,7 +3,7 @@ import RAPIER from '@dimforge/rapier3d-compat/rapier.es.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const loader = new GLTFLoader();
-const cardGLTF = await loader.loadAsync('/assets/deck.glb');
+const cardGLTF = await loader.loadAsync('/assets/card.glb');
 const cardMesh = cardGLTF.scene.children[0]; // not the cleanest but hey, it's just a side-project
 export const boundingBox = cardMesh.geometry.boundingBox.clone();
 
