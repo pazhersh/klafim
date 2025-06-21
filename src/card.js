@@ -56,8 +56,7 @@ export default class Card {
     update() {
         this.mesh.position.copy(this.rigidBody.translation());
         const rotation = this.rigidBody.rotation();
-        // This is the wrong calculation
-        this.mesh.setRotationFromEuler(new THREE.Euler(rotation.x, rotation.y, rotation.z));
+        this.mesh.setRotationFromQuaternion(new THREE.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w));
         if (this.wasClicked)
             this.hover(this.targetMovement);
     }
