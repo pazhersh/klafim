@@ -80,7 +80,6 @@ async function drawCard() {
   await new Promise(resolve => setTimeout(resolve, 500)); // wtf? TODO
   drawnCard.setLocked(false);
 }
-document.querySelector('button').addEventListener('click', () => drawCard());
 
 elementsToListen.push(...deck);
 
@@ -92,6 +91,10 @@ canvasElement.addEventListener('mousedown', (event) => {
   const selectedElement = elementsToListen.find(element => element.mesh === intersectedMesh);
 
   if (selectedElement) {
+    if (selectedElement === deck[deck.length - 1]) {
+      drawCard();
+    }
+
     selectedElement?.onClick?.(intersection.point);
     currentSelectedElement = selectedElement
   }
