@@ -54,9 +54,10 @@ function randOffset() {
 }
 
 const cardValues = [
-  'paz',
-  'is',
-  'the king'
+  'On a scale of 1 to 10, why is there so much dust on the binders?',
+  'On a scale of 100 to 100, how much do you like Paz?',
+  'How much money would you pay to have this deck-app on your phone?',
+  'On a scale of 0 to 100, how much do you think this deck-app improves the Fun Facts experiance?'
 ]
 
 const deck = await Promise.all(cardValues.map(async (cardValue, index) => {

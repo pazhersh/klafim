@@ -43,7 +43,21 @@ export default class Card {
         // top-left: 123, 277
         // width-height: 312, 480
         context.font = "72px serif";
-        context.fillText(text, 123 + 100, 277 + 240);
+        const words = text.split(' ');
+        const lines = words.reduce((allLines, currentWord) => {
+            if (allLines[allLines.length -1].length + 1 + currentWord.length > 10) {
+                allLines.push(currentWord);
+                return allLines;
+            }
+
+            allLines[allLines.length -1] += ` ${currentWord}`;
+            return allLines;
+        }, ['']);
+        
+        const lineHeight = 72;
+        lines.forEach((line, index) => {
+            context.fillText(line, 123, 277 + (lineHeight * index), 480);
+        })
 
         // console.log(this.mesh.material.clone());
         const texture = new THREE.CanvasTexture(canvas); 
