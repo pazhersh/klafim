@@ -53,7 +53,7 @@ function randOffset() {
   return 0.5 - Math.random();
 }
 
-const flipQuarternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
+const flipQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
 const cardValues = [
   'On a scale of 1 to 10, why is there so much dust on the binders?',
   'On a scale of 100 to 100, how much do you like Paz?',
@@ -64,8 +64,8 @@ const cardValues = [
 const deck = await Promise.all(cardValues.map(async (cardValue, index) => {
   const card = await Card.Create(cardValue);
   card.rigidBody.setTranslation({ x: randOffset() / 10, y: (index + 1) * cardHeight, z: randOffset() / 10 });
-  const randQuarternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), randOffset() / 10);
-  const rotationQuarternion = flipQuarternion.multiply(randQuarternion);
+  const randQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), randOffset() / 10);
+  const rotationQuarternion = flipQuaternion.multiply(randQuaternion);
   card.rigidBody.setRotation(rotationQuarternion);
   card.setLocked(true);
   return card;
