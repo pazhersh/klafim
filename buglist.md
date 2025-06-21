@@ -6,3 +6,5 @@
 # missing planned features
 * xcel uploader
 * about page
+* non shitty look
+* color changing card
