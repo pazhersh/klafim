@@ -50,7 +50,7 @@ canvasElement.addEventListener('mousemove', (event) => {
 const cardHeight = cardBoundingBox.max.y;
 
 function randOffset() {
-  return 0.5 - Math.random();
+  return (0.5 - Math.random()) / 10;
 }
 
 const flipQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
@@ -63,8 +63,8 @@ const cardValues = [
 
 const deck = await Promise.all(cardValues.map(async (cardValue, index) => {
   const card = await Card.Create(cardValue);
-  card.rigidBody.setTranslation({ x: randOffset() / 10, y: (index + 1) * cardHeight, z: randOffset() / 10 });
-  const randQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), randOffset() / 10);
+  card.rigidBody.setTranslation({ x: randOffset(), y: (index + 1) * cardHeight, z: randOffset() });
+  const randQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), randOffset());
   const rotationQuarternion = flipQuaternion.multiply(randQuaternion);
   card.rigidBody.setRotation(rotationQuarternion);
   card.setLocked(true);
