@@ -62,8 +62,11 @@ const cardValues = [
 
 const deck = await Promise.all(cardValues.map(async (cardValue, index) => {
   const card = await Card.Create(cardValue);
-  card.rigidBody.setTranslation({ x: randOffset() / 20, y: index * cardHeight, z: randOffset() / 20 });
-  card.rigidBody.setRotation({w: 1.0, x: 0.0, y: randOffset() / 30, z: 180.0 });
+  card.rigidBody.setTranslation({ x: randOffset() / 10, y: (index + 1) * cardHeight, z: randOffset() / 10 });
+  const flipQuarternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
+  const randQuarternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), randOffset() / 10);
+  const rotationQuarternion = flipQuarternion.multiply(randQuarternion);
+  card.rigidBody.setRotation(rotationQuarternion);
   card.setLocked(true);
   return card;
 }));
