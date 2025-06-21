@@ -7,8 +7,7 @@
   "type": "commonjs",
   "main": "main.js",
   "scripts": {
-    "serve": "busybox httpd -f -p 8000",
-    "dev": "node node_modules/vite/bin/vite.js",
+    "serve": "node node_modules/vite/bin/vite.js",
     "build": "node node_modules/vite/bin/vite.js build"
   },
   "dependencies": {
