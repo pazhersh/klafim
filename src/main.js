@@ -78,7 +78,6 @@ async function drawCard() {
 
   const drawnCard = deck.pop();
   drawnCard.rigidBody.setRotation({ w: 1, x: 0, y: drawnCard.rigidBody.rotation().y, z: 0.0 });
-  await new Promise(resolve => setTimeout(resolve, 500)); // wtf? TODO
   drawnCard.setLocked(false);
 }
 
