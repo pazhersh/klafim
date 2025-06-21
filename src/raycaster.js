@@ -6,9 +6,14 @@ export class Raycaster {
         this.caster = new ThreeRaycaster();
         this.camera = camera;
         this.canvasElement = canvasElement;
+
+        this.canvasElement.addEventListener('mousemove', (event) => {
+            window.raycaster.updatePointer(event);
+        });
     }
 
-    getElementsAtPosition({ x, y }) {
+    updatePointer(event) {
+        const { offsetX: x, offsetY: y } = event;
         const normalizedPosition = getNormalizedPosition({
             x,
             y,
@@ -16,13 +21,15 @@ export class Raycaster {
             height: this.canvasElement.height
         });
         this.caster.setFromCamera(normalizedPosition, this.camera);
+    }
+
+    getPointedElements() {
         const relevantMeshes = window.scene.children.filter(mesh => mesh !== window.debugger?.mesh);
         return this.caster.intersectObjects(relevantMeshes);
     }
 
-    getPointedElement(event) {
-        const { offsetX: x, offsetY: y } = event;
-        const intersections = this.getElementsAtPosition({ x, y });
+    getPointedElement() {
+        const intersections = this.getPointedElements();
 
         if (!intersections.length) {
             return undefined;

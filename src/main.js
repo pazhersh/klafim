@@ -34,21 +34,21 @@ window.scene.add(light);
 
 document.body.appendChild(canvasElement);
 
-const raycaster = new Raycaster(camera, canvasElement)
+window.raycaster = new Raycaster(camera, canvasElement)
 
 const orbitControls = new OrbitControls(camera, canvasElement);
 let isOrbiting = false;
 orbitControls.addEventListener('start', () => { isOrbiting = true });
 orbitControls.addEventListener('end', () => { isOrbiting = false });
+
 canvasElement.addEventListener('mousemove', (event) => {
-  const selectedElement = raycaster.getPointedElement(event)?.object;
+  const selectedElement = window.raycaster.getPointedElement()?.object;
   if (!isOrbiting)
     orbitControls.enabled = !Boolean(selectedElement);
 })
 
-
 canvasElement.addEventListener('mousedown', (event) => {
-  const intersection = raycaster.getPointedElement(event);
+  const intersection = window.raycaster.getPointedElement();
   const selectedElement = intersection?.object;
 
   // if (selectedElement === deck) {
@@ -58,19 +58,36 @@ canvasElement.addEventListener('mousedown', (event) => {
 })
 
 const cardHeight = cardBoundingBox.max.y;
-const deck = Array.from({ length: 1 }).map((_, index) => {
+
+function randOffset() {
+  return 0.5 - Math.random();
+}
+const deck = Array.from({ length: 52 }).map((_, index) => {
   const card = new Card();
-  card.rigidBody.setTranslation({ x: 0, y: index * cardHeight, z: 0 });
-  // card.setLocked(true);
+  card.rigidBody.setTranslation({ x: randOffset() / 20, y: index * cardHeight, z: randOffset() / 20 });
+  card.rigidBody.setRotation({w: 1.0, x: 0.0, y: randOffset() / 30, z: 180.0 });
+  card.setLocked(true);
   return card;
 })
+
+async function drawCard() {
+  if (!deck.length) {
+    return;
+  }
+
+  const drawnCard = deck.pop();
+  drawnCard.rigidBody.setRotation({ w: 1, x: 0, y: drawnCard.rigidBody.rotation().y, z: 0.0 });
+  await new Promise(resolve => setTimeout(resolve, 500)); // wtf? TODO
+  drawnCard.setLocked(false);
+}
+document.querySelector('button').addEventListener('click', () => drawCard());
 
 elementsToListen.push(...deck);
 
 let currentSelectedElement;
 
 canvasElement.addEventListener('mousedown', (event) => {
-  const intersection = raycaster.getPointedElement(event);
+  const intersection = window.raycaster.getPointedElement();
   const intersectedMesh = intersection?.object;
   const selectedElement = elementsToListen.find(element => element.mesh === intersectedMesh);
 
@@ -80,7 +97,7 @@ canvasElement.addEventListener('mousedown', (event) => {
   }
 })
 canvasElement.addEventListener('mousemove', (event) => {
-  const groundIntersection = raycaster.getIntersectionWith(ground.mesh);
+  const groundIntersection = window.raycaster.getIntersectionWith(ground.mesh);
   currentSelectedElement?.onDrag?.(groundIntersection[0].point);
 })
 canvasElement.addEventListener('mouseup', (event) => {
