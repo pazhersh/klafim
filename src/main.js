@@ -47,28 +47,25 @@ canvasElement.addEventListener('mousemove', (event) => {
     orbitControls.enabled = !Boolean(selectedElement);
 })
 
-canvasElement.addEventListener('mousedown', (event) => {
-  const intersection = window.raycaster.getPointedElement();
-  const selectedElement = intersection?.object;
-
-  // if (selectedElement === deck) {
-  //   const newCard = addCard(intersection.position);
-  //   console.log(newCard);
-  // }
-})
-
 const cardHeight = cardBoundingBox.max.y;
 
 function randOffset() {
   return 0.5 - Math.random();
 }
-const deck = Array.from({ length: 52 }).map((_, index) => {
-  const card = new Card();
+
+const cardValues = [
+  'paz',
+  'is',
+  'the king'
+]
+
+const deck = await Promise.all(cardValues.map(async (cardValue, index) => {
+  const card = await Card.Create(cardValue);
   card.rigidBody.setTranslation({ x: randOffset() / 20, y: index * cardHeight, z: randOffset() / 20 });
   card.rigidBody.setRotation({w: 1.0, x: 0.0, y: randOffset() / 30, z: 180.0 });
   card.setLocked(true);
   return card;
-})
+}));
 
 async function drawCard() {
   if (!deck.length) {

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat/rapier.es.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { Image } from 'image-js';
 
 const loader = new GLTFLoader();
 const cardGLTF = await loader.loadAsync('/assets/card.glb');
@@ -27,6 +28,31 @@ export default class Card {
         window.world.createCollider(colliderDesc, this.rigidBody);
     }
 
+    static async Create(text) {
+        const card = new Card();
+        await card.writeText(text);
+
+        return card;
+    }
+
+    async writeText(text) {
+        const image = await Image.load('/assets/card.png' );
+        const canvas = image.getCanvas();
+        const context = canvas.getContext('2d');
+
+        // top-left: 123, 277
+        // width-height: 312, 480
+        context.font = "72px serif";
+        context.fillText(text, 123 + 100, 277 + 240);
+
+        // console.log(this.mesh.material.clone());
+        const texture = new THREE.CanvasTexture(canvas); 
+        const newMaterial = this.mesh.material.clone();
+        newMaterial.map = texture;
+
+        this.mesh.material = newMaterial;
+    }
+    
     hover(targetPosition) {
         const position = this.rigidBody.translation();
         const movementForce = targetPosition.clone()
