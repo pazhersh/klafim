@@ -56,7 +56,7 @@ function randOffset() {
 const flipQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
 const cardValues = [
   'On a scale of 1 to 10, why is there so much dust on the binders?',
-  'On a scale of 100 to 100, how much do you like Paz?',
+  'On a scale of 90 to 100, how much do you like Paz?',
   'How much money would you pay to have this deck-app on your phone?',
   'On a scale of 0 to 100, how much do you think this deck-app improves the Fun Facts experiance?'
 ]
