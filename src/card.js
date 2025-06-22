@@ -30,13 +30,15 @@ export default class Card {
 
     static async Create(text) {
         const card = new Card();
-        await card.writeText(text);
+        if (text) {
+            await card.writeText(text);
+        }
 
         return card;
     }
 
     async writeText(text) {
-        const image = await Image.load('/assets/card.png' );
+        const image = await Image.load('/assets/card.png');
         const canvas = image.getCanvas();
         const context = canvas.getContext('2d');
 
@@ -45,28 +47,25 @@ export default class Card {
         context.font = "72px serif";
         const words = text.split(' ');
         const lines = words.reduce((allLines, currentWord) => {
-            if (allLines[allLines.length -1].length + 1 + currentWord.length > 10) {
+            if (allLines[allLines.length - 1].length + 1 + currentWord.length > 10) {
                 allLines.push(currentWord);
                 return allLines;
             }
 
-            allLines[allLines.length -1] += ` ${currentWord}`;
+            allLines[allLines.length - 1] += ` ${currentWord}`;
             return allLines;
         }, ['']);
-        
+
         const lineHeight = 72;
         lines.forEach((line, index) => {
             context.fillText(line, 123, 277 + (lineHeight * index), 480);
         })
 
-        // console.log(this.mesh.material.clone());
-        const texture = new THREE.CanvasTexture(canvas); 
-        const newMaterial = this.mesh.material.clone();
-        newMaterial.map = texture;
-
-        this.mesh.material = newMaterial;
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.flipY = false;
+        this.mesh.material.map = texture;
     }
-    
+
     hover(targetPosition) {
         const position = this.rigidBody.translation();
         const movementForce = targetPosition.clone()
