@@ -100,7 +100,7 @@ canvasElement.addEventListener('mousedown', (event) => {
   const selectedElement = elementsToListen.find(element => element.mesh === intersectedMesh);
 
   if (selectedElement) {
-    if (selectedElement === deck[deck.length - 1]) {
+    if (selectedElement === deck.at(-1)) {
       drawCard();
     }
 
@@ -122,22 +122,7 @@ canvasElement.addEventListener('mousemove', (event) => {
 canvasElement.addEventListener('mouseup', (event) => {
   debounce(() => currentSelectedElement?.onRelease?.()), ['mouseUp', currentSelectedElement];
   currentSelectedElement = null;
-  // testCard.onRelease();
 })
-
-
-// const testCard = await Card2.Create('test');
-// testCard.rigidBody.setTranslation({ x: 0, y: 1, z: 0 });
-// elementsToListen.push(testCard);
-
-// canvasElement.addEventListener('mousemove', (event) => {
-//   const groundIntersection = window.raycaster.getIntersectionWith(ground.mesh);
-//   const point = groundIntersection[0]?.point;
-//   if (point) testCard.onDrag(point);
-// })
-// canvasElement.addEventListener('mousemove', (event) => {
-//   console.log('translation', testCard.rigidBody.translation())
-// })
 
 // window.debugger = new RapierDebuger();
 
