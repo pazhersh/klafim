@@ -20,6 +20,14 @@ const elementsToListen = [];
 
 const ground = new Ground();
 
+const hoverPlaneGeometry = new THREE.PlaneGeometry(100, 100).rotateX(Math.PI / 2 * -1);
+const hoverPlane = new THREE.Mesh(hoverPlaneGeometry);
+hoverPlane.visible = false;
+hoverPlane.position.setY(1);
+hoverPlane.name = 'hoverPlane';
+window.scene.add(hoverPlane);
+
+
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.z = 5;
 
@@ -104,9 +112,9 @@ canvasElement.addEventListener('mousedown', (event) => {
   }
 })
 canvasElement.addEventListener('mousemove', (event) => {
-  const groundIntersection = window.raycaster.getIntersectionWith(ground.mesh);
+  const hoverPlaneIntersection = window.raycaster.getIntersectionWith(hoverPlane);
   debounce(
-    () => currentSelectedElement?.onDrag?.(groundIntersection[0].point),
+    () => currentSelectedElement?.onDrag?.(hoverPlaneIntersection[0].point),
     ['mousemove', currentSelectedElement]
   );
 })

@@ -9,8 +9,7 @@ const cardMesh = cardGLTF.scene.children[0]; // not the cleanest but hey, it's j
 export const boundingBox = cardMesh.geometry.boundingBox.clone();
 
 export default class Card {
-    wasClicked = false;
-    targetMovement = new THREE.Vector3();
+    targetPosition;
     mesh;
     rigidBody;
 
@@ -84,31 +83,23 @@ export default class Card {
         this.mesh.position.copy(this.rigidBody.translation());
         const rotation = this.rigidBody.rotation();
         this.mesh.setRotationFromQuaternion(new THREE.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w));
-        if (this.wasClicked)
-            this.hover(this.targetMovement);
+
+        if (this.targetPosition) {
+            this.hover(this.targetPosition);
+        }
     }
 
     onClick(position) {
-        // const force = this.mesh.position.clone().sub(position).normalize().divideScalar(-2);
-        // this.rigidBody.addForce(new RAPIER.Vector3(force.x, force.y, force.z), true);
-
         this.rigidBody.setGravityScale(0);
-        this.wasClicked = true;
-
-        const bodyPosition = this.rigidBody.translation();
-        this.targetMovement = new THREE.Vector3(bodyPosition.x, bodyPosition.y + 1, bodyPosition.z + 3)
-
-        // this.rigidBody.applyImpulse(new RAPIER.Vector3(0, 0, 1), true);
-        // setTimeout(() => {
-        //     this.rigidBody.applyImpulse(new RAPIER.Vector3(0, 0, -2), true);
-        // }, 250);
+        this.targetPosition = position.clone();
     }
     onDrag(position) {
-        this.targetMovement.copy(position).setY(1);
+        this.targetPosition = position.clone();
     }
     onRelease(position) {
-        this.wasClicked = false
+        this.targetPosition = undefined;
         this.rigidBody.setGravityScale(1);
+
     }
     setLocked(lock) {
         this.rigidBody.lockRotations(lock);

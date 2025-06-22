@@ -24,7 +24,7 @@ export class Raycaster {
     }
 
     getPointedElements() {
-        const relevantMeshes = window.scene.children.filter(mesh => mesh !== window.debugger?.mesh);
+        const relevantMeshes = window.scene.children.filter(mesh => mesh !== window.debugger?.mesh && mesh.name !== 'hoverPlane');
         return this.caster.intersectObjects(relevantMeshes);
     }
 
