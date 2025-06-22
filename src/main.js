@@ -7,6 +7,7 @@ import RAPIER from '@dimforge/rapier3d-compat/rapier.es.js';
 import Card, { boundingBox as cardBoundingBox } from './card.js';
 import Ground from './ground.js';
 import RapierDebuger from './rapierDebugger.js';
+import { bounce, debounce } from './utils.js';
 
 await RAPIER.init();
 
@@ -95,31 +96,53 @@ canvasElement.addEventListener('mousedown', (event) => {
       drawCard();
     }
 
-    selectedElement?.onClick?.(intersection.point);
+    debounce(
+      () => selectedElement?.onClick?.(intersection.point),
+      ['mousedown', selectedElement]
+    )
     currentSelectedElement = selectedElement
   }
 })
 canvasElement.addEventListener('mousemove', (event) => {
   const groundIntersection = window.raycaster.getIntersectionWith(ground.mesh);
-  currentSelectedElement?.onDrag?.(groundIntersection[0].point);
-})
-canvasElement.addEventListener('mouseup', (event) => {
-  currentSelectedElement?.onRelease?.();
-  currentSelectedElement = null;
+  debounce(
+    () => currentSelectedElement?.onDrag?.(groundIntersection[0].point),
+    ['mousemove', currentSelectedElement]
+  );
 })
 
+canvasElement.addEventListener('mouseup', (event) => {
+  debounce(() => currentSelectedElement?.onRelease?.()), ['mouseUp', currentSelectedElement];
+  currentSelectedElement = null;
+  // testCard.onRelease();
+})
+
+
+// const testCard = await Card2.Create('test');
+// testCard.rigidBody.setTranslation({ x: 0, y: 1, z: 0 });
+// elementsToListen.push(testCard);
+
+// canvasElement.addEventListener('mousemove', (event) => {
+//   const groundIntersection = window.raycaster.getIntersectionWith(ground.mesh);
+//   const point = groundIntersection[0]?.point;
+//   if (point) testCard.onDrag(point);
+// })
+// canvasElement.addEventListener('mousemove', (event) => {
+//   console.log('translation', testCard.rigidBody.translation())
+// })
 
 // window.debugger = new RapierDebuger();
 
-// // Feels like this should be on of the animation function, but it breaks the physics for some reason
-// const clock = new THREE.Clock()
-// let delta;
+const clock = new THREE.Clock()
+let delta;
 function animate() {
   requestAnimationFrame(animate);
 
-  // delta = clock.getDelta();
+  delta = clock.getDelta();
+  // // Feels like this should be on of the animation function, but it breaks the physics for some reason
   // window.world.timestep = delta;
   window.world.step();
+  bounce();
   elementsToListen.forEach(element => element?.update());
   window.debugger?.update();
   renderer.render(window.scene, camera);

@@ -66,46 +66,18 @@ export default class Card {
         this.mesh.material.map = texture;
     }
 
-    hover(targetPosition) {
-        const position = this.rigidBody.translation();
-        const movementForce = targetPosition.clone()
-            .sub(position)
-            .clampLength(0, 0.01);
+    hover(target) {
+        const movementVector = target.clone().sub(this.rigidBody.translation());
+        if (movementVector.length() < 0.5) {
+            this.rigidBody.resetForces(true);
+            return;
+        }
+        const movementForce = movementVector
+            .clampLength(0, 1)
+            .divideScalar(1000);
 
-        const velocity = this.rigidBody.linvel();
-        const velocityVector = new THREE.Vector3(velocity.x, velocity.y, velocity.z);
-        // const dragForce = 1/2 * density * velocity^2 * Drag coefficient * cross sectional area
-        const dragForce =
-            velocityVector.clone().multiply(velocityVector) // velocity squeared
-                .divideScalar(2)
-                // .multiplyScalar(Math.pow(targetPosition.distanceTo(position), -1))
-                .multiplyScalar(1) // Density
-                .multiplyScalar(1) // Drag coefficient
-                .multiplyScalar(1) // cross sectional area
-                .multiplyScalar(-1) // against the movement direction
-            ;
-
-        // function isInvalid(number) {
-        //     return !number || number === Infinity || number === -Infinity
-        // }
-        // function isInvalidVector({ x, y, z }) {
-        //     return isInvalid(x) && isInvalid(y) && isInvalid(z);
-        // }
-
-        // if (isInvalidVector(movementForce)) {
-        //     movementForce.copy({ x: 0, y: 0, z: 0 })
-        //     dragForce.copy({ x: 0, y: 0, z: 0 })
-        // }
-        // if (isInvalidVector(dragForce)) {
-        //     dragForce.copy({ x: 0, y: 0, z: 0 })
-        // }
-
-        const totalForce = velocityVector.clone().add(movementForce);
         this.rigidBody.resetForces(true);
         this.rigidBody.addForce(movementForce, true);
-        // this.rigidBody.addForce(dragForce, true);
-        console.log(movementForce, dragForce);
-        // this.rigidBody.addForce(totalForce, true);
     }
 
     update() {
