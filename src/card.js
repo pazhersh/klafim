@@ -44,7 +44,8 @@ export default class Card {
 
         // top-left: 123, 277
         // width-height: 312, 480
-        context.font = "72px serif";
+        const lineHeight = 42;
+        context.font = `${lineHeight}px serif`;
         const words = text.split(' ');
         const lines = words.reduce((allLines, currentWord) => {
             if (allLines[allLines.length - 1].length + 1 + currentWord.length > 10) {
@@ -56,9 +57,8 @@ export default class Card {
             return allLines;
         }, ['']);
 
-        const lineHeight = 72;
         lines.forEach((line, index) => {
-            context.fillText(line, 123, 277 + (lineHeight * index), 480);
+            context.fillText(line, 123, 277 + (lineHeight * (index + 1)), 480);
         })
 
         const texture = new THREE.CanvasTexture(canvas);
