@@ -23,7 +23,9 @@ export default class Card {
         const points = this.mesh.geometry.attributes.position.array;
         const colliderDesc = RAPIER.ColliderDesc
             .convexHull(points)
+            .setActiveCollisionTypes(RAPIER.ActiveCollisionTypes.ALL)
             .setDensity(1.0);
+
         window.world.createCollider(colliderDesc, this.rigidBody);
     }
 
@@ -71,6 +73,7 @@ export default class Card {
             this.rigidBody.resetForces(true);
             return;
         }
+
         const movementForce = movementVector
             .clampLength(0, 1)
             .divideScalar(1000);
@@ -80,7 +83,9 @@ export default class Card {
     }
 
     update() {
-        this.mesh.position.copy(this.rigidBody.translation());
+        const translation = this.rigidBody.translation()
+        this.mesh.position.copy(new THREE.Vector3(translation.x, translation.y, translation.z));
+
         const rotation = this.rigidBody.rotation();
         this.mesh.setRotationFromQuaternion(new THREE.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w));
 
@@ -99,7 +104,7 @@ export default class Card {
     onRelease(position) {
         this.targetPosition = undefined;
         this.rigidBody.setGravityScale(1);
-
+        this.rigidBody.wakeUp();
     }
     setLocked(lock) {
         this.rigidBody.lockRotations(lock);
