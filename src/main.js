@@ -9,6 +9,9 @@ import Ground from './ground.js';
 import RapierDebuger from './rapierDebugger.js';
 import { bounce, debounce } from './utils.js';
 
+import './decksUtils.js';
+import { initDecks, loadDecks } from './decksUtils.js';
+
 await RAPIER.init();
 
 let gravity = { x: 0.0, y: -9.81, z: 0.0 };
@@ -50,31 +53,34 @@ orbitControls.mouseButtons.LEFT = undefined;
 orbitControls.mouseButtons.MIDDLE = THREE.MOUSE.PAN;
 orbitControls.mouseButtons.RIGHT = THREE.MOUSE.ROTATE;
 
-const cardHeight = cardBoundingBox.max.y;
+const cardThickness = cardBoundingBox.max.y;
+const cardWidth = cardBoundingBox.max.z;
 
 function randOffset() {
   return (0.5 - Math.random()) / 10;
 }
 
 const flipQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
-const cardValues = [
-  'On a scale of 1 to 10, why is there so much dust on the blinds?',
-  'On a scale of 90 to 100, how much do you like Paz?',
-  'How much money would you pay to have this deck-app on your phone?',
-  'On a scale of 0 to 100, how much do you think this deck-app improves the Fun Facts experiance?'
-]
 
-const deck = await Promise.all(cardValues.map(async (cardValue, index) => {
-  const card = await Card.Create(cardValue);
-  card.rigidBody.setTranslation({ x: randOffset(), y: (index + 1) * cardHeight, z: randOffset() });
-  const randQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), randOffset());
-  const rotationQuarternion = flipQuaternion.multiply(randQuaternion);
-  card.rigidBody.setRotation(rotationQuarternion);
-  card.setLocked(true);
-  return card;
+initDecks();
+const decks = loadDecks();
+
+decks.set('test', { name: 'test', cardValues: ['1', '2', '3'] });
+
+const decksElements = await Promise.all(decks.entries().map(async ([deckId, deck], deckIndex) => {
+  const deckXLocation = deckIndex * 2 * cardWidth;
+  return await Promise.all(deck.cardValues.map(async (cardValue, cardIndex) => {
+    const card = await Card.Create(cardValue);
+    card.rigidBody.setTranslation({ x: randOffset() + deckXLocation, y: (cardIndex + 1) * cardThickness, z: randOffset() });
+    const randQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), randOffset());
+    const rotationQuarternion = flipQuaternion.multiply(randQuaternion);
+    card.rigidBody.setRotation(rotationQuarternion);
+    card.setLocked(true);
+    return card;
+  }));
 }));
 
-async function drawCard() {
+async function drawCard(deck) {
   if (!deck.length) {
     return;
   }
@@ -84,7 +90,7 @@ async function drawCard() {
   drawnCard.setLocked(false);
 }
 
-elementsToListen.push(...deck);
+elementsToListen.push(...decksElements[0], ...decksElements[1]);
 
 let currentSelectedElement;
 
@@ -97,8 +103,9 @@ canvasElement.addEventListener('mousedown', (event) => {
   const selectedElement = elementsToListen.find(element => element.mesh === intersectedMesh);
 
   if (selectedElement) {
-    if (selectedElement === deck.at(-1)) {
-      drawCard();
+    const drawnDeck = decksElements.find((deck) => selectedElement === deck.at(-1));
+    if (drawnDeck) {
+      drawCard(drawnDeck);
     }
 
     debounce(
