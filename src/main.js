@@ -120,8 +120,10 @@ canvasElement.addEventListener('mousemove', (event) => {
 })
 
 canvasElement.addEventListener('mouseup', (event) => {
-  debounce(() => currentSelectedElement?.onRelease?.()), ['mouseUp', currentSelectedElement];
-  currentSelectedElement = null;
+  debounce(() => {
+    currentSelectedElement?.onRelease?.();
+    currentSelectedElement = null;
+  }, ['mouseup', currentSelectedElement]);
 })
 
 // window.debugger = new RapierDebuger();
