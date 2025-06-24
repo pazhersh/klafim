@@ -46,15 +46,9 @@ document.body.appendChild(canvasElement);
 window.raycaster = new Raycaster(camera, canvasElement)
 
 const orbitControls = new OrbitControls(camera, canvasElement);
-let isOrbiting = false;
-orbitControls.addEventListener('start', () => { isOrbiting = true });
-orbitControls.addEventListener('end', () => { isOrbiting = false });
-
-canvasElement.addEventListener('mousemove', (event) => {
-  const selectedElement = window.raycaster.getPointedElement()?.object;
-  if (!isOrbiting)
-    orbitControls.enabled = !Boolean(selectedElement);
-})
+orbitControls.mouseButtons.LEFT = undefined;
+orbitControls.mouseButtons.MIDDLE = THREE.MOUSE.PAN;
+orbitControls.mouseButtons.RIGHT = THREE.MOUSE.ROTATE;
 
 const cardHeight = cardBoundingBox.max.y;
 
@@ -95,6 +89,9 @@ elementsToListen.push(...deck);
 let currentSelectedElement;
 
 canvasElement.addEventListener('mousedown', (event) => {
+  if (event.button !== THREE.MOUSE.LEFT)
+    return;
+
   const intersection = window.raycaster.getPointedElement();
   const intersectedMesh = intersection?.object;
   const selectedElement = elementsToListen.find(element => element.mesh === intersectedMesh);
@@ -124,6 +121,13 @@ canvasElement.addEventListener('mouseup', (event) => {
     currentSelectedElement?.onRelease?.();
     currentSelectedElement = null;
   }, ['mouseup', currentSelectedElement]);
+})
+
+
+const testers = document.querySelectorAll('.tester');
+testers[0].addEventListener('click', () => {
+});
+testers[1].addEventListener('click', () => {
 })
 
 // window.debugger = new RapierDebuger();
