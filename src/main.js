@@ -90,7 +90,7 @@ async function drawCard(deck) {
   drawnCard.setLocked(false);
 }
 
-elementsToListen.push(...decksElements[0], ...decksElements[1]);
+decksElements.forEach((deckElement) => elementsToListen.push(...deckElement));
 
 let currentSelectedElement;
 

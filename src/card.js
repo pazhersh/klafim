@@ -15,6 +15,7 @@ export default class Card {
 
     constructor() {
         this.mesh = cardMesh.clone();
+        this.mesh.material = cardMesh.material.clone();
         window.scene.add(this.mesh);
 
         const rigidBodyDesc = RAPIER.RigidBodyDesc.dynamic();
