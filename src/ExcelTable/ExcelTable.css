@@ -1,0 +1,12 @@
+td {
+    border-radius: 5px;
+}
+
+td.data {
+    background-color: lightblue;
+}
+
+td.table-title {
+    font-weight: bold;
+    background-color: lightskyblue;
+}

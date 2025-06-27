@@ -1,4 +1,5 @@
 import xlsx from 'xlsx';
+import './ExcelTable.css'
 
 export default function ExcelTable({ sheet }) {
     const sheetData: object[] = xlsx.utils.sheet_to_json(sheet, {
@@ -16,12 +17,14 @@ export default function ExcelTable({ sheet }) {
     console.log(headers);
     return <table>
         <tr>
-            {headers.map((header) => <td>
+            <td></td>
+            {headers.map((header) => <td className='table-title'>
                 {header}
             </td>)}
         </tr>
-        {sheetData.map((rowData) => <tr>
-            {headers.map((header) => <td>
+        {sheetData.map((rowData, index) => <tr>
+            <td className='table-title'>{index}</td>
+            {headers.map((header) => <td className='data'>
                 {rowData[header]}
             </td>)}
         </tr>)}
