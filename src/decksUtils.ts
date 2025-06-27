@@ -13,7 +13,7 @@ function generateDeckId() {
 
 export function loadDecks() {
     const rawDecks = localStorage.getItem(DECKS_KEY);
-    return new Map(JSON.parse(rawDecks));
+    return new Map(rawDecks && JSON.parse(rawDecks));
 }
 
 export function saveDecks(decks) {
