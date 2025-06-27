@@ -3,6 +3,7 @@ import ExcelTable from '../ExcelTable/ExcelTable';
 import xlsx from 'xlsx';
 import './UploadExcelPage.css';
 import useTableSelectionStore from '../useTableSelectionStore';
+import DeckPreview from '../DeckPreview/DeckPreview';
 
 export default function UploadExcelPage() {
     const [sheet, setSheet] = useState();
@@ -14,7 +15,7 @@ export default function UploadExcelPage() {
     };
 
     const selections = useTableSelectionStore((state) => state.selections);
-    console.log(selections);
+    const cardValues = Array.from(selections.values()).map((selection) => selection.value);
 
     return <div className='container'>
         <div className='pane table-container'>
@@ -27,7 +28,7 @@ export default function UploadExcelPage() {
         <div className='pane' style={{ backgroundColor: 'lightblue' }}>
             placeholder for deck preview;
             <div style={{ overflow: 'auto' }}>
-                {JSON.stringify(Array.from(selections.entries()))}
+                <DeckPreview values={cardValues} />
             </div>
         </div>
     </div>
