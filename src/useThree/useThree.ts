@@ -1,34 +1,26 @@
 import RAPIER from '@dimforge/rapier3d-compat/rapier.es.js';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as THREE from 'three';
 
 import { Raycaster } from './raycaster.js';
-import { Element } from '../elements/types.js';
-import useDebounceToUpdate from './useDebounceToUpdate.js';
 
 type UseThreeProps = {
-    containerRef: React.RefObject<HTMLCanvasElement | null>;
+    canvasRef: React.RefObject<HTMLCanvasElement | null>;
+    onAnimate?: () => void;
 }
 
 const gravity = { x: 0.0, y: -9.81, z: 0.0 };
 
-export default function useThree({ containerRef }: UseThreeProps) {
+export default function useThree({ canvasRef, onAnimate }: UseThreeProps) {
     const [renderer, setRenderer] = useState<THREE.WebGLRenderer>();
     const [world, setWorld] = useState<any>();
     const [scene, setScene] = useState<THREE.Scene>(new THREE.Scene());
     const [raycaster, setRaycaster] = useState<Raycaster>();
     const [camera, setCamera] = useState<THREE.Camera>(new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000));
 
-    const { debounceToUpdate, onUpdate } = useDebounceToUpdate();
-
-    const [elements, setElements] = useState<Element[]>([]);
-    const addElement = useCallback((element: Element) => {
-        setElements([...elements, element])
-    }, []);
-
     useEffect(() => {
         async function initThree() {
-            if (!containerRef.current) {
+            if (!canvasRef.current) {
                 return;
             }
 
@@ -37,10 +29,17 @@ export default function useThree({ containerRef }: UseThreeProps) {
 
             camera.position.copy(new THREE.Vector3(0.0, 4.0, 4.0));
 
-            setRenderer(new THREE.WebGLRenderer({ canvas: containerRef.current }));
-            renderer!.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
+            setRenderer(new THREE.WebGLRenderer({ canvas: canvasRef.current }));
 
-            setRaycaster(new Raycaster(camera, containerRef.current, scene));
+        };
+        initThree();
+    }, [canvasRef.current]);
+
+    useEffect(() => {
+        if (renderer && canvasRef.current) {
+            renderer.setSize(canvasRef.current.clientWidth, canvasRef.current.clientHeight);
+
+            setRaycaster(new Raycaster(camera, canvasRef.current, scene));
 
             // const clock = new THREE.Clock()
             // let delta;
@@ -51,14 +50,12 @@ export default function useThree({ containerRef }: UseThreeProps) {
                 // // Feels like this should be on of the animation function, but it breaks the physics for some reason
                 // world.timestep = delta;
                 world?.step();
-                onUpdate();
-                elements.forEach(element => element.update?.());
-                renderer!.render(scene, camera);
+                onAnimate?.();
+                renderer?.render(scene, camera);
             }
-            renderer!.setAnimationLoop(animate);
-        };
-        initThree();
-    }, [containerRef.current]);
+            renderer.setAnimationLoop(animate);
+        }
+    }, [renderer, canvasRef]);
 
-    return { world, scene, raycaster, camera, addElement, debounceToUpdate };
+    return { world, scene, raycaster, camera };
 }

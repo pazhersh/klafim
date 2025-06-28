@@ -4,7 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/Addons.js';
 
 type UseOrbitControlsProps = {
     camera: Camera;
-    canvasElement?: HTMLCanvasElement;
+    canvasElement?: HTMLCanvasElement | null;
 }
 
 export default function useOrbitControls({ camera, canvasElement }: UseOrbitControlsProps) {
