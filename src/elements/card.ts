@@ -97,7 +97,7 @@ export default class Card implements Element {
     onDrag(position) {
         this.targetPosition = position.clone();
     }
-    onRelease(position) {
+    onRelease() {
         this.targetPosition = undefined;
         this.rigidBody.setGravityScale(1);
         this.rigidBody.wakeUp();
