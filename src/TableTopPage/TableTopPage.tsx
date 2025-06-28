@@ -14,12 +14,9 @@ export default function TableTopPage() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [elements, setElements] = useState<Element[]>([]);
 
-    const onAnimate = () => {
-        if (elements.length) {
-            console.log('here', elements);
-            elements.forEach((element) => element.update?.());
-        }
-    }
+    const onAnimate = useCallback(() => {
+        elements.forEach((element) => element.update?.());
+    }, [elements]);
 
     const { scene, world, camera } = useThree({ canvasRef, onAnimate });
     const isLoaded = useMemo(() => (world && scene), [world, scene]);
@@ -31,11 +28,11 @@ export default function TableTopPage() {
             const ground = new Ground(scene, world);
 
             const card = await Card.Create(scene, world, 'asdf');
-            card.rigidBody.setTranslation(0, 100, 100);
+            card.rigidBody.setTranslation({ x: 0, y: 1, z: 0 });
+            console.log(card.rigidBody.translation());
             card.rigidBody.setRotation(flipQuaternion);
-            card.setLocked(true);
+            // card.setLocked(true);
 
-            console.log('set', [ground, card]);
             setElements([ground, card]);
         }
 

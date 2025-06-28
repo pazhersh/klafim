@@ -55,7 +55,7 @@ export default function useThree({ canvasRef, onAnimate }: UseThreeProps) {
             }
             renderer.setAnimationLoop(animate);
         }
-    }, [renderer, canvasRef]);
+    }, [renderer, canvasRef, onAnimate]);
 
     return { world, scene, raycaster, camera };
 }
