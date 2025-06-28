@@ -7,15 +7,13 @@ import { Element } from '../elements/types.js';
 import useDebounceToUpdate from './useDebounceToUpdate.js';
 
 type UseThreeProps = {
-    containerRef: React.RefObject<HTMLElement | null>;
-    debugRapier?: boolean;
+    containerRef: React.RefObject<HTMLCanvasElement | null>;
 }
 
 const gravity = { x: 0.0, y: -9.81, z: 0.0 };
 
-export default function useThree({ containerRef, debugRapier }: UseThreeProps) {
-    const [renderer, setRenderer] = useState<THREE.WebGLRenderer>(new THREE.WebGLRenderer());
-    const [canvasElement, setCanvasElement] = useState<HTMLCanvasElement>();
+export default function useThree({ containerRef }: UseThreeProps) {
+    const [renderer, setRenderer] = useState<THREE.WebGLRenderer>();
     const [world, setWorld] = useState<any>();
     const [scene, setScene] = useState<THREE.Scene>(new THREE.Scene());
     const [raycaster, setRaycaster] = useState<Raycaster>();
@@ -30,17 +28,19 @@ export default function useThree({ containerRef, debugRapier }: UseThreeProps) {
 
     useEffect(() => {
         async function initThree() {
+            if (!containerRef.current) {
+                return;
+            }
+
             await RAPIER.init();
             setWorld(new RAPIER.World(gravity));
 
             camera.position.copy(new THREE.Vector3(0.0, 4.0, 4.0));
 
-            renderer.setSize(containerRef.current?.clientWidth ?? 0, containerRef.current?.clientHeight ?? 0);
-            const domElement = renderer.domElement;
+            setRenderer(new THREE.WebGLRenderer({ canvas: containerRef.current }));
+            renderer!.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
 
-            setCanvasElement(domElement);
-
-            setRaycaster(new Raycaster(camera, domElement, scene));
+            setRaycaster(new Raycaster(camera, containerRef.current, scene));
 
             // const clock = new THREE.Clock()
             // let delta;
@@ -53,18 +53,12 @@ export default function useThree({ containerRef, debugRapier }: UseThreeProps) {
                 world?.step();
                 onUpdate();
                 elements.forEach(element => element.update?.());
-                renderer.render(scene, camera);
+                renderer!.render(scene, camera);
             }
-            renderer.setAnimationLoop(animate);
+            renderer!.setAnimationLoop(animate);
         };
         initThree();
-    }, []);
+    }, [containerRef.current]);
 
-    useEffect(() => {
-        if (canvasElement && containerRef.current && !containerRef.current?.querySelector('canvas')) {
-            containerRef.current.appendChild(canvasElement);
-        }
-    }, [containerRef.current, canvasElement])
-
-    return { canvasElement, world, scene, raycaster, camera, addElement, debounceToUpdate };
+    return { world, scene, raycaster, camera, addElement, debounceToUpdate };
 }

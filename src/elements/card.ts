@@ -13,9 +13,9 @@ const cardMaterial = cardMesh.material as THREE.Material;
 export const boundingBox = cardMesh.geometry.boundingBox!.clone();
 
 export default class Card implements Element {
-    targetPosition;
-    mesh;
-    rigidBody;
+    targetPosition: THREE.Vector3 | undefined;
+    mesh: THREE.Mesh;
+    rigidBody: any;
 
     constructor(scene: THREE.Scene, world: any) {
         this.mesh = cardMesh.clone();
@@ -60,7 +60,7 @@ export default class Card implements Element {
 
         const texture = new THREE.CanvasTexture(canvas);
         texture.flipY = false;
-        this.mesh.material.map = texture;
+        (this.mesh.material as THREE.MeshBasicMaterial).map = texture;
     }
 
     hover(target) {
