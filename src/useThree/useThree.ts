@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { Raycaster } from './raycaster.js';
 
 type UseThreeProps = {
-    canvasRef: React.RefObject<HTMLCanvasElement | null>;
+    canvasRef: React.RefObject<HTMLCanvasElement | undefined>;
     onAnimate?: () => void;
 }
 
@@ -20,10 +20,6 @@ export default function useThree({ canvasRef, onAnimate }: UseThreeProps) {
 
     useEffect(() => {
         async function initThree() {
-            if (!canvasRef.current) {
-                return;
-            }
-
             await RAPIER.init();
             setWorld(new RAPIER.World(gravity));
 
@@ -32,7 +28,9 @@ export default function useThree({ canvasRef, onAnimate }: UseThreeProps) {
             setRenderer(new THREE.WebGLRenderer({ canvas: canvasRef.current }));
 
         };
-        initThree();
+        if (canvasRef.current && !renderer && !world) {
+            initThree();
+        }
     }, [canvasRef.current]);
 
     useEffect(() => {
