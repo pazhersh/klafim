@@ -4,6 +4,7 @@ import useThree from '../useThree/useThree';
 import useOrbitControls from '../useThree/useOrbitControls';
 import useLightSource from '../useThree/useLightSource';
 import Ground from '../elements/ground';
+import Card from '../elements/card';
 
 export default function TableTopPage() {
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -13,8 +14,13 @@ export default function TableTopPage() {
     useLightSource({ scene });
 
     useEffect(() => {
+        const initElements = async () => {
+            addElement(new Ground(scene, world));
+            addElement(await Card.Create(scene, world, 'asdf'));
+        }
+
         if (scene && world) {
-            addElement(new Ground(scene, world))
+            initElements();
         }
     }, [scene, world])
 
