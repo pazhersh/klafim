@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ExcelTable from '../ExcelTable/ExcelTable';
 import xlsx from 'xlsx';
-import './UploadExcelPage.css';
+import styles from './UploadExcelPage.module.css';
 import useTableSelectionStore from '../useTableSelectionStore';
 import DeckPreview from '../DeckPreview/DeckPreview';
 
@@ -17,15 +17,15 @@ export default function UploadExcelPage() {
     const selections = useTableSelectionStore((state) => state.selections);
     const cardValues = Array.from(selections.values()).map((selection) => selection.value);
 
-    return <div className='container'>
-        <div className='pane table-container'>
+    return <div className={styles.container}>
+        <div className={`${styles.pane} ${styles.tableContainer}`}>
             <input type='file' onChange={async (event) => onChange(event.target.files[0])} className='table-header' />
-            {sheet && <div className='table-data'>
+            {sheet && <div className={styles.tableData}>
                 <ExcelTable sheet={sheet} />
             </div>}
         </div>
 
-        <div className='pane' style={{ backgroundColor: 'lightblue' }}>
+        <div className={styles.pane} style={{ backgroundColor: 'lightblue' }}>
             placeholder for deck preview;
             <div style={{ overflow: 'auto' }}>
                 <DeckPreview values={cardValues} />
