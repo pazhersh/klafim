@@ -1,10 +1,9 @@
 import RAPIER from '@dimforge/rapier3d-compat/rapier.es.js';
 import { useEffect, useState } from 'react';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-import { Raycaster } from './raycaster.js';
 import { bounce } from '../legacy/utils.js';
+import { Raycaster } from './raycaster.js';
 import { Element } from './types.js';
 
 const gravity = { x: 0.0, y: -9.81, z: 0.0 };
@@ -14,6 +13,7 @@ export default function useThree() {
     const [world, setWorld] = useState<any>();
     const [scene, setScene] = useState<THREE.Scene>(new THREE.Scene());
     const [raycaster, setRaycaster] = useState<Raycaster>();
+    const [camera, setCamera] = useState<THREE.Camera>(new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000));
 
     useEffect(() => {
         async function initThree() {
@@ -22,16 +22,8 @@ export default function useThree() {
 
             const elementsToListen: Element[] = [];
 
-            const hoverPlaneGeometry = new THREE.PlaneGeometry(100, 100).rotateX(Math.PI / 2 * -1);
-            const hoverPlane = new THREE.Mesh(hoverPlaneGeometry);
-            hoverPlane.visible = false;
-            hoverPlane.position.setY(1);
-            hoverPlane.name = 'hoverPlane';
-            scene.add(hoverPlane);
-
-
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.copy(new THREE.Vector3(0.0, 4.0, 4.0));
+
 
             const renderer = new THREE.WebGLRenderer();
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -46,10 +38,10 @@ export default function useThree() {
 
             setRaycaster(new Raycaster(camera, canvasElement, scene));
 
-            const orbitControls = new OrbitControls(camera, canvasElement);
-            orbitControls.mouseButtons.LEFT = undefined;
-            orbitControls.mouseButtons.MIDDLE = THREE.MOUSE.PAN;
-            orbitControls.mouseButtons.RIGHT = THREE.MOUSE.ROTATE;
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            const cube = new THREE.Mesh(geometry, material);
+            scene.add(cube);
 
             const clock = new THREE.Clock()
             let delta;
@@ -70,5 +62,5 @@ export default function useThree() {
         initThree();
     }, []);
 
-    return { canvasElement, world, scene, raycaster };
+    return { canvasElement, world, scene, raycaster, camera };
 }

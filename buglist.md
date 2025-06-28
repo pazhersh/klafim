@@ -6,6 +6,8 @@
 * use damping to slow down cards on drag
 * no limit to pan/rotate view
 * when card gets flipped by physics, it doesn't unflip when picking up
+## theoretical
+* orbit controls - if the canvas or camera are changed could it cause double controls?
 
 # missing planned features
 * xcel uploader
