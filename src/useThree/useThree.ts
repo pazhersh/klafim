@@ -5,10 +5,15 @@ import * as THREE from 'three';
 import { bounce } from '../legacy/utils.js';
 import { Raycaster } from './raycaster.js';
 import { Element } from './types.js';
+import { GLTFLoader } from 'three/examples/jsm/Addons.js';
+
+type UseThreeProps = {
+    containerRef: React.RefObject<HTMLElement | null>;
+}
 
 const gravity = { x: 0.0, y: -9.81, z: 0.0 };
 
-export default function useThree() {
+export default function useThree({ containerRef }: UseThreeProps) {
     const [canvasElement, setCanvasElement] = useState<HTMLCanvasElement>();
     const [world, setWorld] = useState<any>();
     const [scene, setScene] = useState<THREE.Scene>(new THREE.Scene());
@@ -31,17 +36,13 @@ export default function useThree() {
             const canvasElement = renderer.domElement;
             setCanvasElement(renderer.domElement);
 
-            const skyColor = 0xFFFFFF;
-            const groundColor = 0x101010;
-            const light = new THREE.HemisphereLight(skyColor, groundColor, 1);
-            scene.add(light);
-
             setRaycaster(new Raycaster(camera, canvasElement, scene));
 
-            const geometry = new THREE.BoxGeometry(1, 1, 1);
-            const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-            const cube = new THREE.Mesh(geometry, material);
-            scene.add(cube);
+            // Mesh to test against
+            const loader = new GLTFLoader();
+            const cardGLTF = await loader.loadAsync('/assets/card.glb');
+            const cardMesh = cardGLTF.scene.children[0]; // not the cleanest but hey, it's just a side-project
+            scene.add(cardMesh);
 
             const clock = new THREE.Clock()
             let delta;
@@ -61,6 +62,12 @@ export default function useThree() {
         };
         initThree();
     }, []);
+
+    useEffect(() => {
+        if (canvasElement && containerRef.current && !containerRef.current?.querySelector('canvas')) {
+            containerRef.current.appendChild(canvasElement);
+        }
+    }, [containerRef.current, canvasElement])
 
     return { canvasElement, world, scene, raycaster, camera };
 }
