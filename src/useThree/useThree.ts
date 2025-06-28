@@ -4,7 +4,7 @@ import * as THREE from 'three';
 
 import RapierDebuger from '../legacy/rapierDebugger.js';
 import { Raycaster } from './raycaster.js';
-import { Element } from './types.js';
+import { Element } from '../elements/types.js';
 import useDebounceToUpdate from './useDebounceToUpdate.js';
 
 type UseThreeProps = {
@@ -32,7 +32,7 @@ export default function useThree({ containerRef, debugRapier }: UseThreeProps) {
     if (debugRapier) {
         const rapierDebugger = new RapierDebuger();
         addElement({
-            mesh: rapierDebugger.mesh,
+            mesh: rapierDebugger.mesh as unknown as THREE.Mesh,
             rigidBody: null,
             update: rapierDebugger.update
         })
