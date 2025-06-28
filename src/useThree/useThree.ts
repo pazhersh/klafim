@@ -2,7 +2,6 @@ import RAPIER from '@dimforge/rapier3d-compat/rapier.es.js';
 import { useCallback, useEffect, useState } from 'react';
 import * as THREE from 'three';
 
-import RapierDebuger from '../legacy/rapierDebugger.js';
 import { Raycaster } from './raycaster.js';
 import { Element } from '../elements/types.js';
 import useDebounceToUpdate from './useDebounceToUpdate.js';
@@ -28,15 +27,6 @@ export default function useThree({ containerRef, debugRapier }: UseThreeProps) {
     const addElement = useCallback((element: Element) => {
         setElements([...elements, element])
     }, []);
-
-    if (debugRapier) {
-        const rapierDebugger = new RapierDebuger();
-        addElement({
-            mesh: rapierDebugger.mesh as unknown as THREE.Mesh,
-            rigidBody: null,
-            update: rapierDebugger.update
-        })
-    }
 
     useEffect(() => {
         async function initThree() {
