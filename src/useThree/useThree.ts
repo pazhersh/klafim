@@ -1,61 +1,68 @@
 import RAPIER from '@dimforge/rapier3d-compat/rapier.es.js';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import * as THREE from 'three';
 
-import { bounce } from '../legacy/utils.js';
+import RapierDebuger from '../legacy/rapierDebugger.js';
 import { Raycaster } from './raycaster.js';
 import { Element } from './types.js';
-import { GLTFLoader } from 'three/examples/jsm/Addons.js';
+import useDebounceToUpdate from './useDebounceToUpdate.js';
 
 type UseThreeProps = {
     containerRef: React.RefObject<HTMLElement | null>;
+    debugRapier?: boolean;
 }
 
 const gravity = { x: 0.0, y: -9.81, z: 0.0 };
 
-export default function useThree({ containerRef }: UseThreeProps) {
+export default function useThree({ containerRef, debugRapier }: UseThreeProps) {
+    const [renderer, setRenderer] = useState<THREE.WebGLRenderer>(new THREE.WebGLRenderer());
     const [canvasElement, setCanvasElement] = useState<HTMLCanvasElement>();
     const [world, setWorld] = useState<any>();
     const [scene, setScene] = useState<THREE.Scene>(new THREE.Scene());
     const [raycaster, setRaycaster] = useState<Raycaster>();
     const [camera, setCamera] = useState<THREE.Camera>(new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000));
 
+    const { debounceToUpdate, onUpdate } = useDebounceToUpdate();
+
+    const [elements, setElements] = useState<Element[]>([]);
+    const addElement = useCallback((element: Element) => {
+        setElements([...elements, element])
+    }, []);
+
+    if (debugRapier) {
+        const rapierDebugger = new RapierDebuger();
+        addElement({
+            mesh: rapierDebugger.mesh,
+            rigidBody: null,
+            update: rapierDebugger.update
+        })
+    }
+
     useEffect(() => {
         async function initThree() {
             await RAPIER.init();
             setWorld(new RAPIER.World(gravity));
 
-            const elementsToListen: Element[] = [];
-
             camera.position.copy(new THREE.Vector3(0.0, 4.0, 4.0));
 
+            renderer.setSize(containerRef.current?.clientWidth ?? 0, containerRef.current?.clientHeight ?? 0);
+            const domElement = renderer.domElement;
 
-            const renderer = new THREE.WebGLRenderer();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            setCanvasElement(domElement);
 
-            const canvasElement = renderer.domElement;
-            setCanvasElement(renderer.domElement);
+            setRaycaster(new Raycaster(camera, domElement, scene));
 
-            setRaycaster(new Raycaster(camera, canvasElement, scene));
-
-            // Mesh to test against
-            const loader = new GLTFLoader();
-            const cardGLTF = await loader.loadAsync('/assets/card.glb');
-            const cardMesh = cardGLTF.scene.children[0]; // not the cleanest but hey, it's just a side-project
-            scene.add(cardMesh);
-
-            const clock = new THREE.Clock()
-            let delta;
+            // const clock = new THREE.Clock()
+            // let delta;
             function animate() {
                 requestAnimationFrame(animate);
 
-                delta = clock.getDelta();
+                // delta = clock.getDelta();
                 // // Feels like this should be on of the animation function, but it breaks the physics for some reason
                 // world.timestep = delta;
                 world?.step();
-                bounce();
-                elementsToListen.forEach(element => element.update?.());
-                // window.debugger?.update();
+                onUpdate();
+                elements.forEach(element => element.update?.());
                 renderer.render(scene, camera);
             }
             renderer.setAnimationLoop(animate);
@@ -69,5 +76,5 @@ export default function useThree({ containerRef }: UseThreeProps) {
         }
     }, [containerRef.current, canvasElement])
 
-    return { canvasElement, world, scene, raycaster, camera };
+    return { canvasElement, world, scene, raycaster, camera, addElement, debounceToUpdate };
 }
