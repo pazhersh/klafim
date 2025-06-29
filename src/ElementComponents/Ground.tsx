@@ -1,15 +1,22 @@
-import * as THREE from 'three';
-import RAPIER from '@dimforge/rapier3d-compat/rapier.es.js';
-import { ThreeElement, ThreeElements } from '@react-three/fiber';
 import { RigidBody } from "@react-three/rapier";
+import { ElementComponentProps } from './types';
+import { Vector3 } from "three";
 
-const position = [0, -5, 0] as const;
+const width = 100;
+const height = 100;
+const depth = 10;
 
-export default function Ground(props: ThreeElements['mesh']) {
-    return <RigidBody type='fixed'>
-        <mesh position={position}>
-            <boxGeometry args={[100, 10, 100]} />
-            <meshBasicMaterial color='0x0000ff' />
+export default function Ground({ meshProps, rigidBodyProps }: ElementComponentProps) {
+    return <mesh {...meshProps} >
+        <mesh position={[0, -depth / 2, 0]}>
+            <planeGeometry args={[width, height]} rotateX={Math.PI / 2 * -1} />
+            <meshBasicMaterial color='#0000dd' />
         </mesh>
-    </RigidBody>
+        <RigidBody type='fixed' {...rigidBodyProps}>
+            <mesh position={[0, -5, 0]}>
+                <boxGeometry args={[width, depth, height]} />
+            </mesh>
+        </RigidBody>
+    </mesh>
+
 };
