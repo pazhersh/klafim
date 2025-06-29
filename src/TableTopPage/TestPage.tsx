@@ -8,6 +8,7 @@ import styles from './TableTopPage.module.css';
 import * as THREE from 'three';
 
 import { OrbitControls } from 'three-stdlib'
+import Card, { boundingBox } from '../ElementComponents/Card';
 
 extend({ OrbitControls })
 
@@ -18,7 +19,7 @@ declare module '@react-three/fiber' {
 }
 
 const camera = new THREE.PerspectiveCamera(75);
-camera.position.copy(new THREE.Vector3(0.0, 4.0, 10.0));
+camera.position.copy(new THREE.Vector3(0.0, 4.0, -10.0));
 
 type CanvasWrapperProps = {
     children: React.ReactNode;
@@ -43,7 +44,10 @@ function TestPage() {
 
         <Suspense fallback={<TestElementComponent />}>
             <Physics timeStep="vary">
-                <TestElementComponentWithPhysics />
+                <Card
+                    value='test'
+                    meshProps={{ position: [0, boundingBox.max.y, 0] }}
+                    rigidBodyProps={{ lockTranslations: true, lockRotations: true }} />
                 <Ground meshProps={{ position: [0, 0, 0] }} />
             </Physics>
         </Suspense>
