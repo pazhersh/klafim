@@ -7,6 +7,7 @@ import styles from './TableTopPage.module.css';
 
 import Card, { boundingBox } from '../ElementComponents/Card';
 import OrbitControls from '../ElementComponents/OrbitControls';
+import Deck from '../ElementComponents/Deck';
 
 const camera = new THREE.PerspectiveCamera(75);
 camera.position.copy(new THREE.Vector3(0.0, 4.0, -10.0));
@@ -31,10 +32,7 @@ function TestPage() {
 
         <Suspense fallback={<div>loading...</div>}>
             <Physics timeStep="vary">
-                <Card
-                    value='test'
-                    meshProps={{ position: [0, boundingBox.max.y, 0] }}
-                    rigidBodyProps={{ lockTranslations: true, lockRotations: true }} />
+                <Deck deck={{ name: 'paz', cardValues: ['asdf', 'qwer', 'zxcv'] }} meshProps={{ position: [0, 0, 0] }} />
                 <Ground meshProps={{ position: [0, 0, 0] }} />
             </Physics>
         </Suspense>
