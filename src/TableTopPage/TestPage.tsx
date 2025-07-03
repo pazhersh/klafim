@@ -3,7 +3,6 @@ import { Physics } from '@react-three/rapier';
 import React, { Suspense } from 'react';
 import * as THREE from 'three';
 import Ground from '../ElementComponents/Ground';
-import { TestElementComponent } from '../ElementComponents/testElementComponent';
 import styles from './TableTopPage.module.css';
 
 import Card, { boundingBox } from '../ElementComponents/Card';
@@ -30,7 +29,7 @@ function TestPage() {
         <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
         <OrbitControls />
 
-        <Suspense fallback={<TestElementComponent />}>
+        <Suspense fallback={<div>loading...</div>}>
             <Physics timeStep="vary">
                 <Card
                     value='test'
