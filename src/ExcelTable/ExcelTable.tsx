@@ -42,7 +42,7 @@ export default function ExcelTable({ sheet }) {
             {sheetData.map((rowData, row) => <tr className={styles.row}>
                 <td className={`${styles.cell} ${styles.titleCell}`}>{row}</td>
                 {headers.map((header, column) => <td className={`${styles.cell} ${styles.dataCell}`}>
-                    <button className={styles.cellButton} onClick={() => onCellClick({ row, column, value: rowData[header] })}>
+                    <button className={`${styles.cellButton} ${getItemAt([column, row]) ? styles.selectedCellButton : ''}`} onClick={() => onCellClick({ row, column, value: rowData[header] })}>
                         {rowData[header]}
                     </button>
                 </td>)}
