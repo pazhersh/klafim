@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import TableTop from '../ElementComponents/TableTop';
+import TableTop from '../../Components/TableTop';
 import styles from './TableTopPage.module.css';
 
 export default function TableTopPage() {

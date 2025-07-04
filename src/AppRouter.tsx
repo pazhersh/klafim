@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router";
-import NotFoundPage from './NotFoundPage';
-import TableTopPage from './TableTopPage/TableTopPage';
-import UploadExcelPage from './UploadExcelPage/UploadExcelPage';
+import NotFoundPage from './Pages/NotFoundPage';
+import TableTopPage from './Pages/TableTop/TableTopPage';
+import UploadExcelPage from './Pages/UploadExcelPage/UploadExcelPage';
 
 export default function AppRouter() {
     return <BrowserRouter>

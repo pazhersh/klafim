@@ -3,7 +3,7 @@ import RAPIER from '@dimforge/rapier3d-compat/rapier.es.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { Element } from './types';
 import { Image } from 'image-js';
-import { splitTextByMaxLength } from '../utils';
+import { splitTextByMaxLength } from '../../utils';
 
 const loader = new GLTFLoader();
 const cardGLTF = await loader.loadAsync('/assets/card.glb');

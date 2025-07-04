@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import * as THREE from 'three';
-import { Deck, initDecks } from '../decksUtils';
-import { Raycaster } from '../useThree/raycaster';
-import useDebounce from '../useThree/useDebounceToUpdate';
+import { Deck, initDecks } from '../../decksUtils';
+import { Raycaster } from '../../useThree/raycaster';
+import useDebounce from '../../useThree/useDebounceToUpdate';
 import Card, { boundingBox as cardBoundingBox } from './card';
-import useEffectDebugger from '../useEffectDebugger';
+import useEffectDebugger from '../../useEffectDebugger';
 
 type useCardDeckProps = {
     canvasElement?: HTMLCanvasElement | null;

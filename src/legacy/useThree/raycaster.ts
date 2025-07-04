@@ -1,5 +1,5 @@
 import { Camera, Scene, Raycaster as ThreeRaycaster, Vector2 } from 'three';
-import { getNormalizedPosition } from '../legacy/utils';
+import { getNormalizedPosition } from '../utils';
 
 export class Raycaster {
     caster: ThreeRaycaster;
