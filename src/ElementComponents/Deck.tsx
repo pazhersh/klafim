@@ -28,8 +28,12 @@ export default function Deck({ meshProps, deck }: DeckProps) {
 
     const handleDraw = (index) => {
         if (index === deck.cardValues.length - 1 - drawnCount.current) {
-            rigidBodyRefs.current[index]?.lockTranslations(false, true);
-            rigidBodyRefs.current[index]?.lockRotations(false, true);
+            const rigidBody = rigidBodyRefs.current[index];
+            rigidBody?.lockTranslations(false, false);
+            rigidBody?.lockRotations(false, false);
+
+            rigidBody?.setRotation({ w: 1, x: 0, y: 0, z: 0.0 }, true);
+
             drawnCount.current++;
         }
     }
