@@ -33,9 +33,14 @@ export default function UploadExcelPage() {
         <NavBar />
 
         <div className={`${styles.pane} ${styles.tableContainer}`}>
-            <div className={styles.toolbar} >
-                <input type='file' onChange={async (event) => onChange(event.target.files?.[0])} className='table-header' />
-                <label htmlFor='deckName'>deck title:</label><input id='deckName' type='text' onChange={(event) => setDeckName(event.target.value)} />
+            <div className={styles.toolb0ar} >
+                <label htmlFor='uploadExcel'>upload excel:</label>
+                <input id='uploadExcel' type='file' onChange={async (event) => onChange(event.target.files?.[0])} className='table-header' />
+
+                <label htmlFor='deckName'>deck title:</label>
+                <input id='deckName' type='text' onChange={(event) => setDeckName(event.target.value)} />
+
+                <button onClick={() => onSaveDeck()}>Save deck</button>
             </div>
             {sheet && <div className={styles.tableData}>
                 <ExcelTable sheet={sheet} />
@@ -48,7 +53,6 @@ export default function UploadExcelPage() {
                 <h2>{deckName}</h2>
                 <DeckPreview values={cardValues} />
             </div>
-            <button onClick={() => onSaveDeck()}>Save deck</button>
         </div>
     </div>
 }
