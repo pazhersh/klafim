@@ -36,7 +36,6 @@ export default function Card({
     const { holdingTarget, setHeldItem, heldItem } = useContext(HoldingContext);
 
     const rigidBodyRef = useRef<RapierRigidBody>(null);
-    const [isHeld, setIsHeld] = useState(false);
 
     const mesh = useMemo(() => {
         const clonedMesh = gltfMesh.clone();
@@ -46,6 +45,7 @@ export default function Card({
 
     useEffect(() => {
         if (value && mesh) {
+            // TODO: move to Material tsx
             const canvas = baseTexture.getCanvas();
             const context = canvas.getContext('2d')!;
 
@@ -73,8 +73,8 @@ export default function Card({
             }
             else {
                 const movementForce = movementVector
-                    .clampLength(0, 1)
-                    .divideScalar(2);
+                    .divideScalar(1.5)
+                    .clampLength(0, 2);
 
                 rigidBodyRef.current.resetForces(true);
                 rigidBodyRef.current.addForce(movementForce, true);
