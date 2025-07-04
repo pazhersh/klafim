@@ -3,9 +3,10 @@ import { ElementComponentProps } from "./types";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import { RapierRigidBody, RigidBody } from "@react-three/rapier";
 import { CanvasTexture, MeshBasicMaterial, Vector3, type Material, type Mesh } from "three";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Image } from 'image-js';
 import { splitTextByMaxLength } from "../utils";
+import HoldingContext from "./HoldingContext";
 
 // TODO: load in advance (make a bootstrapper)
 const gltfLoader = new GLTFLoader();
@@ -32,6 +33,8 @@ export default function Card({
     } = {},
     value
 }: CardProps) {
+    const { holdingTarget, setHeldItem, heldItem } = useContext(HoldingContext);
+
     const rigidBodyRef = useRef<RapierRigidBody>(null);
     const [isHeld, setIsHeld] = useState(false);
 
@@ -63,20 +66,18 @@ export default function Card({
     }, [value, mesh]);
 
     useFrame(() => {
-        if (rigidBodyRef.current && isHeld) {
-            const target = new Vector3(1, 2, 1);
-
-            const movementVector = target.clone().sub(rigidBodyRef.current.translation());
+        if (rigidBodyRef.current && holdingTarget && heldItem === rigidBodyRef.current) {
+            const movementVector = holdingTarget.clone().sub(rigidBodyRef.current.translation());
             if (movementVector.length() < 0.5) {
                 this.rigidBody.resetForces(true);
             }
             else {
-            const movementForce = movementVector
-                .clampLength(0, 1)
+                const movementForce = movementVector
+                    .clampLength(0, 1)
                     .divideScalar(2);
 
-            rigidBodyRef.current.resetForces(true);
-            rigidBodyRef.current.addForce(movementForce, true);
+                rigidBodyRef.current.resetForces(true);
+                rigidBodyRef.current.addForce(movementForce, true);
             }
         }
     });
@@ -98,13 +99,13 @@ export default function Card({
                 // TODO: typing fix
                 (onPointerDown as (event: ThreeEvent<PointerEvent>) => void | undefined)?.(event);
                 console.log('down');
-                setIsHeld(true);
+                rigidBodyRef.current && setHeldItem(rigidBodyRef.current);
             }}
             onPointerUp={(event: ThreeEvent<PointerEvent>) => {
-                event.stopPropagation();
-                // onPointerUp?.(event);
-                console.log('up');
-                setIsHeld(false);
+                // event.stopPropagation();
+                // // onPointerUp?.(event);
+                // console.log('up');
+                // setIsHeld(false);
             }}
             object={mesh}
         />
