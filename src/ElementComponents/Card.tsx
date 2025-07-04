@@ -69,15 +69,15 @@ export default function Card({
             const movementVector = target.clone().sub(rigidBodyRef.current.translation());
             if (movementVector.length() < 0.5) {
                 this.rigidBody.resetForces(true);
-                return;
             }
-
+            else {
             const movementForce = movementVector
                 .clampLength(0, 1)
-                .divideScalar(10);
+                    .divideScalar(2);
 
             rigidBodyRef.current.resetForces(true);
             rigidBodyRef.current.addForce(movementForce, true);
+            }
         }
     });
 
