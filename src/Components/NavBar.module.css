@@ -1,0 +1,12 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    margin: 0 5px;
+}
+
+.link {
+    color: black;
+    background: linear-gradient(white, transparent);
+    padding: 5px;
+}

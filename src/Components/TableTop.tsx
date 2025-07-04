@@ -7,7 +7,7 @@ import Ground from './Ground';
 
 import Deck from './Deck';
 import HoldingContext from './HoldingContext';
-import HoldingPlain from './HoldingPlain';
+import HoldingPlane from './HoldingPlane';
 import OrbitControls from './OrbitControls';
 import styles from './TableTop.module.css';
 
@@ -44,7 +44,7 @@ function TableTop({ decks }: TableTopProps) {
                     {decks.map((deck, index) =>
                         <Deck key={deck.name} deck={deck} meshProps={{ position: [0, 0, 2 * index] }} />
                     )}
-                    <HoldingPlain width={100} height={100} meshProps={{ position: [0, 1, 0] }} />
+                    <HoldingPlane width={100} height={100} meshProps={{ position: [0, 1, 0] }} />
                     <Ground meshProps={{ position: [0, 0, 0] }} />
                 </Physics>
             </HoldingContext.Provider>
