@@ -9,17 +9,19 @@ import Deck from './Deck';
 import HoldingContext from './HoldingContext';
 import HoldingPlain from './HoldingPlain';
 import OrbitControls from './OrbitControls';
+import styles from './TableTop.module.css';
 
 // TODO: move to using useThree to set camera
 const camera = new THREE.PerspectiveCamera(75);
 camera.position.copy(new THREE.Vector3(0.0, 4.0, -10.0));
 
 type TableTopProps = {
+    className?: string;
     decks: DeckData[];
 }
 
-export default function CanvasWrapper(tableTopProps: TableTopProps) {
-    return <Canvas camera={camera} >
+export default function CanvasWrapper({ className, ...tableTopProps }: TableTopProps) {
+    return <Canvas className={`${styles.canvas} ${className ?? ''}`} camera={camera} >
         <TableTop {...tableTopProps} />
     </Canvas>;
 }
