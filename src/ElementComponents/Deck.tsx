@@ -1,8 +1,9 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Deck as DeckData } from "../decksUtils";
 import Card, { boundingBox } from "./Card";
 import { ElementComponentProps, MeshProps } from "./types";
 import * as THREE from 'three';
+import { RapierRigidBody } from "@react-three/rapier";
 
 type DeckProps = ElementComponentProps & {
     deck: DeckData;
@@ -22,11 +23,14 @@ function getRandomRotation() {
 }
 
 export default function Deck({ meshProps, deck }: DeckProps) {
-    const [drawnCount, setDrawnCount] = useState(0);
+    const drawnCount = useRef(0); // Don't use state to not re-render
+    const rigidBodyRefs = useRef<(RapierRigidBody | undefined)[]>([])
 
     const handleDraw = (index) => {
-        if (index === deck.cardValues.length - 1 - drawnCount) {
-            setDrawnCount(drawnCount + 1);
+        if (index === deck.cardValues.length - 1 - drawnCount.current) {
+            rigidBodyRefs.current[index]?.lockTranslations(false, true);
+            rigidBodyRefs.current[index]?.lockRotations(false, true);
+            drawnCount.current++;
         }
     }
 
@@ -38,8 +42,9 @@ export default function Deck({ meshProps, deck }: DeckProps) {
                 rigidBodyProps={{
                     position: [randOffset(), (index + 1) * cardThickness, randOffset()],
                     rotation: getRandomRotation(),
-                    lockTranslations: !(index > deck.cardValues.length - 1 - drawnCount),
-                    lockRotations: !(index > deck.cardValues.length - 1 - drawnCount)
+                    ref: ((rigidBody) => { rigidBodyRefs.current[index] = rigidBody ?? undefined }),
+                    lockTranslations: true,
+                    lockRotations: true
                 }}
                 meshProps={{
                     onPointerDown: () => { handleDraw(index); }
