@@ -85,16 +85,20 @@ export default function Card({
         }
     });
 
-    return <RigidBody ref={(rigidBody) => {
-        rigidBodyRef.current = rigidBody;
-        if (propsRigidBodyRef) {
-            if (typeof propsRigidBodyRef === 'function')
-                propsRigidBodyRef(rigidBody);
-            else {
-                propsRigidBodyRef.current = rigidBody
+    return <RigidBody
+        ref={(rigidBody) => {
+            rigidBodyRef.current = rigidBody;
+            if (propsRigidBodyRef) {
+                if (typeof propsRigidBodyRef === 'function')
+                    propsRigidBodyRef(rigidBody);
+                else {
+                    propsRigidBodyRef.current = rigidBody
+                }
             }
-        }
-    }} colliders='hull' {...rigidBodyProps}>
+        }}
+        colliders='hull'
+        {...rigidBodyProps}
+    >
         <primitive
             {...meshProps}
             onPointerDown={(event: ThreeEvent<PointerEvent>) => {
