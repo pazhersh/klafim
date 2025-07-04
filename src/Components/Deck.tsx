@@ -4,13 +4,13 @@ import Card, { boundingBox } from "./Card";
 import { ElementComponentProps, MeshProps } from "./types";
 import * as THREE from 'three';
 import { RapierRigidBody } from "@react-three/rapier";
+import { flipQuaternion } from "../utils";
 
 type DeckProps = ElementComponentProps & {
     deck: DeckData;
     translation?: [number, number, number],
 }
 
-const flipQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
 const cardThickness = boundingBox.max.y;
 
 function randOffset() {
@@ -27,12 +27,10 @@ export default function Deck({ translation: [translateX, translateY, translateZ]
     const rigidBodyRefs = useRef<(RapierRigidBody | undefined)[]>([])
 
     const handleDraw = (index) => {
-        if (index === deck.cardValues.length - 1 - drawnCount.current) {
-            const rigidBody = rigidBodyRefs.current[index];
-            rigidBody?.lockTranslations(false, false);
-            rigidBody?.lockRotations(false, false);
-
-            rigidBody?.setRotation({ w: 1, x: 0, y: 0, z: 0.0 }, true);
+        const rigidBody = rigidBodyRefs.current[index];
+        if (rigidBody && index === deck.cardValues.length - 1 - drawnCount.current) {
+            rigidBody.lockTranslations(false, false);
+            rigidBody.lockRotations(false, false);
 
             drawnCount.current++;
         }

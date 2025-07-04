@@ -1,4 +1,4 @@
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
 import { Suspense } from 'react';
 import * as THREE from 'three';
@@ -13,7 +13,8 @@ import styles from './TableTop.module.css';
 
 // TODO: move to using useThree to set camera
 const camera = new THREE.PerspectiveCamera(75);
-camera.position.copy(new THREE.Vector3(0.0, 4.0, -10.0));
+camera.position.copy(new THREE.Vector3(0.0, 4.0, -2.0));
+camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 type TableTopProps = {
     className?: string;
@@ -44,7 +45,7 @@ function TableTop({ decks }: TableTopProps) {
                     {decks.map((deck, index) =>
                         <Deck key={deck.name} deck={deck} translation={[2 * index, 0, 0]} />
                     )}
-                    <HoldingPlane width={100} height={100} meshProps={{ position: [0, 1, 0] }} />
+                    <HoldingPlane width={100} height={100} meshProps={{ position: [0, 1.5, 0] }} />
                     <Ground meshProps={{ position: [0, 0, 0] }} />
                 </Physics>
             </HoldingContext.Provider>

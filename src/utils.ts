@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 export function splitTextByMaxLength(text: string, maxLineLength: number) {
     const matchIndices = Array.from(text.matchAll(/(\s|$)/g), (match) => match.index);
 
@@ -16,3 +18,5 @@ export function splitTextByMaxLength(text: string, maxLineLength: number) {
         return lines;
     }, []);
 }
+
+export const flipQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);

@@ -1,11 +1,11 @@
 import { ThreeEvent, useFrame, useLoader } from "@react-three/fiber";
 import { ElementComponentProps } from "./types";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
-import { RapierRigidBody, RigidBody } from "@react-three/rapier";
-import { CanvasTexture, MeshBasicMaterial, MOUSE, Vector3, type Material, type Mesh } from "three";
+import { CollisionEnterPayload, RapierRigidBody, RigidBody } from "@react-three/rapier";
+import { CanvasTexture, Euler, MeshBasicMaterial, MOUSE, Quaternion, Vector3, type Material, type Mesh } from "three";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Image } from 'image-js';
-import { splitTextByMaxLength } from "../utils";
+import { flipQuaternion, splitTextByMaxLength } from "../utils";
 import HoldingContext from "./HoldingContext";
 
 // TODO: load in advance (make a bootstrapper)
@@ -69,13 +69,16 @@ export default function Card({
         if (rigidBodyRef.current && holdingTarget?.current && heldItem === rigidBodyRef.current) {
             const movementVector = holdingTarget?.current.clone().sub(rigidBodyRef.current.translation());
             if (movementVector.length() < 0.5) {
-                this.rigidBody.resetForces(true);
+                rigidBodyRef.current.resetForces(true);
             }
             else {
                 const movementForce = movementVector
-                    .divideScalar(1.5)
-                    .clampLength(0, 2);
-
+                    .divide({
+                        x: 5 - Math.min(movementVector.length(), 4.9),
+                        y: 5 - Math.min(movementVector.length(), 4.9),
+                        z: 4 - Math.min(movementVector.length(), 2.5)
+                    });
+                rigidBodyRef.current?.rotation()
                 rigidBodyRef.current.resetForces(true);
                 rigidBodyRef.current.addForce(movementForce, true);
             }
@@ -84,6 +87,24 @@ export default function Card({
             rigidBodyRef.current?.resetForces(true);
         }
     });
+
+    const onMouseDown = (event: ThreeEvent<PointerEvent>) => {
+        if (event.button !== MOUSE.LEFT) {
+            return;
+        }
+
+        event.stopPropagation();
+        // TODO: typing fix
+        (onPointerDown as (event: ThreeEvent<PointerEvent>) => void | undefined)?.(event);
+        rigidBodyRef.current && setHeldItem(rigidBodyRef.current);
+
+        const quaternion = rigidBodyRef.current && new Quaternion().copy(rigidBodyRef.current.rotation());
+        const downwards = new Quaternion().setFromAxisAngle(new Vector3(0, 0, Math.PI / 2), -90);
+
+        if (quaternion && (quaternion?.angleTo(downwards) < (Math.PI / 2))) {
+            rigidBodyRef.current?.setRotation(quaternion.multiply(flipQuaternion), true);
+        }
+    }
 
     return <RigidBody
         ref={(rigidBody) => {
@@ -101,23 +122,7 @@ export default function Card({
     >
         <primitive
             {...meshProps}
-            onPointerDown={(event: ThreeEvent<PointerEvent>) => {
-                if (event.button !== MOUSE.LEFT) {
-                    return;
-                }
-
-                event.stopPropagation();
-                // TODO: typing fix
-                (onPointerDown as (event: ThreeEvent<PointerEvent>) => void | undefined)?.(event);
-                console.log('down');
-                rigidBodyRef.current && setHeldItem(rigidBodyRef.current);
-            }}
-            onPointerUp={(event: ThreeEvent<PointerEvent>) => {
-                // event.stopPropagation();
-                // // onPointerUp?.(event);
-                // console.log('up');
-                // setIsHeld(false);
-            }}
+            onPointerDown={onMouseDown}
             object={mesh}
         />
     </RigidBody>;
