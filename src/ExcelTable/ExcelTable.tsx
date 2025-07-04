@@ -39,10 +39,10 @@ export default function ExcelTable({ sheet }) {
             </tr>
         </thead>
         <tbody>
-            {sheetData.map((rowData, row) => <tr>
+            {sheetData.map((rowData, row) => <tr className={styles.row}>
                 <td className={`${styles.cell} ${styles.titleCell}`}>{row}</td>
                 {headers.map((header, column) => <td className={`${styles.cell} ${styles.dataCell}`}>
-                    <button onClick={() => onCellClick({ row, column, value: rowData[header] })}>
+                    <button className={styles.cellButton} onClick={() => onCellClick({ row, column, value: rowData[header] })}>
                         {rowData[header]}
                     </button>
                 </td>)}

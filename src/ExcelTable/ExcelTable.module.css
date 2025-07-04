@@ -1,3 +1,7 @@
+.row {
+    height: 100%;
+}
+
 .cell {
     border-radius: 5px;
 }
@@ -9,4 +13,16 @@
 .titleCell {
     font-weight: bold;
     background-color: lightskyblue;
+}
+
+.cellButton {
+    border-radius: 5px;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.cellButton:hover {
+    border-color: grey;
 }
