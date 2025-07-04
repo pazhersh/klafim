@@ -7,7 +7,7 @@ import { RapierRigidBody } from "@react-three/rapier";
 
 type DeckProps = ElementComponentProps & {
     deck: DeckData;
-    meshProps?: MeshProps,
+    translation?: [number, number, number],
 }
 
 const flipQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
@@ -22,7 +22,7 @@ function getRandomRotation() {
     return new THREE.Euler().setFromQuaternion(flipQuaternion.multiply(randQuaternion));
 }
 
-export default function Deck({ meshProps, deck }: DeckProps) {
+export default function Deck({ translation: [translateX, translateY, translateZ] = [0, 0, 0], deck }: DeckProps) {
     const drawnCount = useRef(0); // Don't use state to not re-render
     const rigidBodyRefs = useRef<(RapierRigidBody | undefined)[]>([])
 
@@ -38,13 +38,13 @@ export default function Deck({ meshProps, deck }: DeckProps) {
         }
     }
 
-    return <mesh {...meshProps}>
+    return <mesh>
         {deck.cardValues.map((value, index) => (
             <Card
                 key={value}
                 value={value}
                 rigidBodyProps={{
-                    position: [randOffset(), (index + 1) * cardThickness, randOffset()],
+                    position: [randOffset() + translateX, (index + 1) * cardThickness + translateY, randOffset() + translateZ],
                     rotation: getRandomRotation(),
                     ref: ((rigidBody) => { rigidBodyRefs.current[index] = rigidBody ?? undefined }),
                     lockTranslations: true,
