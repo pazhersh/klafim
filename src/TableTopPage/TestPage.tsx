@@ -30,7 +30,12 @@ function TestPage() {
         <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
         <OrbitControls />
 
-        <Suspense fallback={<div>loading...</div>}>
+        <Suspense
+            fallback={<mesh>
+                <boxGeometry args={[1, 1, 1]} />
+                <meshStandardMaterial color={'orange'} />
+            </mesh>}
+        >
             <Physics timeStep="vary">
                 <Deck deck={{ name: 'paz', cardValues: ['asdf', 'qwer', 'zxcv'] }} meshProps={{ position: [0, 0, 0] }} />
                 <Ground meshProps={{ position: [0, 0, 0] }} />

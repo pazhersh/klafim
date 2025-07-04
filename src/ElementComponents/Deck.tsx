@@ -1,3 +1,4 @@
+import { useCallback, useState } from "react";
 import { Deck as DeckData } from "../decksUtils";
 import Card, { boundingBox } from "./Card";
 import { ElementComponentProps, MeshProps } from "./types";
@@ -21,6 +22,14 @@ function getRandomRotation() {
 }
 
 export default function Deck({ meshProps, deck }: DeckProps) {
+    const [drawnCount, setDrawnCount] = useState(0);
+
+    const handleDraw = (index) => {
+        if (index === deck.cardValues.length - 1 - drawnCount) {
+            setDrawnCount(drawnCount + 1);
+        }
+    }
+
     return <mesh {...meshProps}>
         {deck.cardValues.map((value, index) => (
             <Card
@@ -29,8 +38,11 @@ export default function Deck({ meshProps, deck }: DeckProps) {
                 rigidBodyProps={{
                     position: [randOffset(), (index + 1) * cardThickness, randOffset()],
                     rotation: getRandomRotation(),
-                    lockTranslations: true,
-                    lockRotations: true
+                    lockTranslations: !(index > deck.cardValues.length - 1 - drawnCount),
+                    lockRotations: !(index > deck.cardValues.length - 1 - drawnCount)
+                }}
+                meshProps={{
+                    onPointerDown: () => { handleDraw(index); }
                 }}
             />
         ))}
