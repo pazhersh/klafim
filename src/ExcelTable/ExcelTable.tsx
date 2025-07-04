@@ -1,6 +1,6 @@
 import xlsx from 'xlsx';
-import './ExcelTable.css'
 import useTableSelectionStore from '../useTableSelectionStore';
+import styles from './ExcelTable.module.css';
 
 export default function ExcelTable({ sheet }) {
     const sheetData: object[] = xlsx.utils.sheet_to_json(sheet, {
@@ -33,15 +33,15 @@ export default function ExcelTable({ sheet }) {
         <thead>
             <tr>
                 <td></td>
-                {headers.map((header) => <td className='table-title'>
+                {headers.map((header) => <td className={`${styles.cell} ${styles.titleCell}`}>
                     {header}
                 </td>)}
             </tr>
         </thead>
         <tbody>
             {sheetData.map((rowData, row) => <tr>
-                <td className='table-title'>{row}</td>
-                {headers.map((header, column) => <td className='data'>
+                <td className={`${styles.cell} ${styles.titleCell}`}>{row}</td>
+                {headers.map((header, column) => <td className={`${styles.cell} ${styles.dataCell}`}>
                     <button onClick={() => onCellClick({ row, column, value: rowData[header] })}>
                         {rowData[header]}
                     </button>

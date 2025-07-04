@@ -1,12 +1,12 @@
-td {
+.cell {
     border-radius: 5px;
 }
 
-td.data {
+.dataCell {
     background-color: lightblue;
 }
 
-td.table-title {
+.titleCell {
     font-weight: bold;
     background-color: lightskyblue;
 }
