@@ -11,7 +11,7 @@ export default function UploadExcelPage() {
     const [sheet, setSheet] = useState<WorkSheet>();
     const [deckName, setDeckName] = useState('');
 
-    const onChange = async (newFile?: File) => {
+    const onExcelUpload = async (newFile?: File) => {
         if (!newFile) {
             return;
         }
@@ -35,7 +35,7 @@ export default function UploadExcelPage() {
         <div className={`${styles.pane} ${styles.tableContainer}`}>
             <div className={styles.toolb0ar} >
                 <label htmlFor='uploadExcel'>upload excel:</label>
-                <input id='uploadExcel' type='file' onChange={async (event) => onChange(event.target.files?.[0])} className='table-header' />
+                <input id='uploadExcel' type='file' onChange={async (event) => onExcelUpload(event.target.files?.[0])} />
 
                 <label htmlFor='deckName'>deck title:</label>
                 <input id='deckName' type='text' onChange={(event) => setDeckName(event.target.value)} />
