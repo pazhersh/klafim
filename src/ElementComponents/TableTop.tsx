@@ -1,30 +1,30 @@
 import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import * as THREE from 'three';
-import Ground from '../ElementComponents/Ground';
-import styles from './TableTopPage.module.css';
+import { Deck as DeckData } from '../decksUtils';
+import Ground from './Ground';
 
-import OrbitControls from '../ElementComponents/OrbitControls';
-import Deck from '../ElementComponents/Deck';
-import HoldingContext from '../ElementComponents/HoldingContext';
-import HoldingPlain from '../ElementComponents/HoldingPlain';
+import Deck from './Deck';
+import HoldingContext from './HoldingContext';
+import HoldingPlain from './HoldingPlain';
+import OrbitControls from './OrbitControls';
 
+// TODO: move to using useThree to set camera
 const camera = new THREE.PerspectiveCamera(75);
 camera.position.copy(new THREE.Vector3(0.0, 4.0, -10.0));
 
-type CanvasWrapperProps = {
-    children: React.ReactNode;
-}
-export default function CanvasWrapper({ children }: CanvasWrapperProps) {
-    return <div className={styles.container} >
-        <Canvas camera={camera} >
-            <TestPage />
-        </Canvas>
-    </div>;
+type TableTopProps = {
+    decks: DeckData[];
 }
 
-function TestPage() {
+export default function CanvasWrapper(tableTopProps: TableTopProps) {
+    return <Canvas camera={camera} >
+        <TableTop {...tableTopProps} />
+    </Canvas>;
+}
+
+function TableTop({ decks }: TableTopProps) {
     return <>
         <ambientLight intensity={Math.PI / 2} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
@@ -39,7 +39,9 @@ function TestPage() {
         >
             <HoldingContext.Provider>
                 <Physics timeStep="vary">
-                    <Deck deck={{ name: 'paz', cardValues: ['asdf', 'qwer', 'zxcv'] }} meshProps={{ position: [0, 0, 0] }} />
+                    {decks.map((deck, index) =>
+                        <Deck key={deck.name} deck={deck} meshProps={{ position: [0, 0, 2 * index] }} />
+                    )}
                     <HoldingPlain width={100} height={100} meshProps={{ position: [0, 1, 0] }} />
                     <Ground meshProps={{ position: [0, 0, 0] }} />
                 </Physics>
