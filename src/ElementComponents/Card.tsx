@@ -2,7 +2,7 @@ import { ThreeEvent, useFrame, useLoader } from "@react-three/fiber";
 import { ElementComponentProps } from "./types";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import { RapierRigidBody, RigidBody } from "@react-three/rapier";
-import { CanvasTexture, MeshBasicMaterial, Vector3, type Material, type Mesh } from "three";
+import { CanvasTexture, MeshBasicMaterial, MOUSE, Vector3, type Material, type Mesh } from "three";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Image } from 'image-js';
 import { splitTextByMaxLength } from "../utils";
@@ -98,6 +98,10 @@ export default function Card({
         <primitive
             {...meshProps}
             onPointerDown={(event: ThreeEvent<PointerEvent>) => {
+                if (event.button !== MOUSE.LEFT) {
+                    return;
+                }
+
                 event.stopPropagation();
                 // TODO: typing fix
                 (onPointerDown as (event: ThreeEvent<PointerEvent>) => void | undefined)?.(event);

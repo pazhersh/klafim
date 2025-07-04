@@ -51,7 +51,13 @@ export default function Deck({ meshProps, deck }: DeckProps) {
                     lockRotations: true
                 }}
                 meshProps={{
-                    onPointerDown: () => { handleDraw(index); }
+                    onPointerDown: (event) => {
+                        if (event.button !== THREE.MOUSE.LEFT) {
+                            return;
+                        }
+
+                        handleDraw(index);
+                    }
                 }}
             />
         ))}
