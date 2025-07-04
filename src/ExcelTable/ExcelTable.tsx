@@ -9,12 +9,19 @@ export default function ExcelTable({ sheet }) {
         defval: null
     });
 
-    const { addSelection } = useTableSelectionStore();
+    const { getItemAt, addSelection, removeSelection } = useTableSelectionStore();
 
-    const onCellClick = ({ column, row, value }) => addSelection({
-        coords: [column, row],
-        value: value
-    });
+    const onCellClick = ({ column, row, value }) => {
+        if (getItemAt([column, row])) {
+            removeSelection([column, row]);
+        }
+        else {
+            addSelection({
+                coords: [column, row],
+                value: value
+            });
+        }
+    };
 
     if (!sheetData.length) {
         return;

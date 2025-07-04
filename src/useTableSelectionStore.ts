@@ -12,10 +12,12 @@ type TableSelectionStore = {
     setSelections: (selections: TableSelection[]) => void,
     addSelection: (selection: TableSelection) => void;
     removeSelection: (selectionCoords: TableCoords) => void;
+    getItemAt: (coords: [number, number]) => TableSelection | undefined;
 }
 
-export default create<TableSelectionStore>((set) => ({
+export default create<TableSelectionStore>((set, state) => ({
     selections: new Map<string, TableSelection>(),
+    getItemAt: ([column, row]) => state().selections.get(JSON.stringify([column, row])),
     setSelections: (selections: TableSelection[]) => set({
         selections: new Map(selections.map(
             selection => ([JSON.stringify(selection.coords), selection])
