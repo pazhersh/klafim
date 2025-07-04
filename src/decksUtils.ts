@@ -14,6 +14,8 @@ const defaultDeckValues = [
 
 const DECKS_KEY = 'decks';
 
+// TODO: make hook
+
 function generateDeckId() {
     return crypto.randomUUID();
 }
@@ -39,4 +41,10 @@ export function initDecks(): Decks {
     }
 
     return loadDecks();
+}
+
+export function addDeck(deck: Deck) {
+    const decks = loadDecks();
+    decks.set(generateDeckId(), deck);
+    saveDecks(decks);
 }

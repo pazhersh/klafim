@@ -5,9 +5,11 @@ import ExcelTable from '../../ExcelTable/ExcelTable';
 import useTableSelectionStore from '../../useTableSelectionStore';
 import styles from './UploadExcelPage.module.css';
 import NavBar from '../../Components/NavBar';
+import { addDeck, Deck as DeckData, loadDecks, saveDecks } from '../../decksUtils';
 
 export default function UploadExcelPage() {
     const [sheet, setSheet] = useState<WorkSheet>();
+    const [deckName, setDeckName] = useState('');
 
     const onChange = async (newFile?: File) => {
         if (!newFile) {
@@ -19,14 +21,22 @@ export default function UploadExcelPage() {
         setSheet(workbook.Sheets[workbook.SheetNames[1]]);
     };
 
+
     const selections = useTableSelectionStore((state) => state.selections);
     const cardValues = Array.from(selections.values()).map((selection) => selection.value);
+
+    const onSaveDeck = () => {
+        addDeck({ name: deckName, cardValues: cardValues.map(value => `${value}`) });
+    };
 
     return <div className={styles.container}>
         <NavBar />
 
         <div className={`${styles.pane} ${styles.tableContainer}`}>
-            <input type='file' onChange={async (event) => onChange(event.target.files?.[0])} className='table-header' />
+            <div className={styles.toolbar} >
+                <input type='file' onChange={async (event) => onChange(event.target.files?.[0])} className='table-header' />
+                <label htmlFor='deckName'>deck title:</label><input id='deckName' type='text' onChange={(event) => setDeckName(event.target.value)} />
+            </div>
             {sheet && <div className={styles.tableData}>
                 <ExcelTable sheet={sheet} />
             </div>}
@@ -35,8 +45,10 @@ export default function UploadExcelPage() {
         <div className={styles.pane} style={{ backgroundColor: 'lightblue' }}>
             placeholder for deck preview;
             <div style={{ overflow: 'auto' }}>
+                <h2>{deckName}</h2>
                 <DeckPreview values={cardValues} />
             </div>
+            <button onClick={() => onSaveDeck()}>Save deck</button>
         </div>
     </div>
 }
