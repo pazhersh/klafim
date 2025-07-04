@@ -5,9 +5,10 @@ import * as THREE from 'three';
 import Ground from '../ElementComponents/Ground';
 import styles from './TableTopPage.module.css';
 
-import Card, { boundingBox } from '../ElementComponents/Card';
 import OrbitControls from '../ElementComponents/OrbitControls';
 import Deck from '../ElementComponents/Deck';
+import HoldingContext from '../ElementComponents/HoldingContext';
+import HoldingPlain from '../ElementComponents/HoldingPlain';
 
 const camera = new THREE.PerspectiveCamera(75);
 camera.position.copy(new THREE.Vector3(0.0, 4.0, -10.0));
@@ -36,10 +37,13 @@ function TestPage() {
                 <meshStandardMaterial color={'orange'} />
             </mesh>}
         >
-            <Physics timeStep="vary">
-                <Deck deck={{ name: 'paz', cardValues: ['asdf', 'qwer', 'zxcv'] }} meshProps={{ position: [0, 0, 0] }} />
-                <Ground meshProps={{ position: [0, 0, 0] }} />
-            </Physics>
+            <HoldingContext.Provider>
+                <Physics timeStep="vary">
+                    <Deck deck={{ name: 'paz', cardValues: ['asdf', 'qwer', 'zxcv'] }} meshProps={{ position: [0, 0, 0] }} />
+                    <HoldingPlain width={100} height={100} meshProps={{ position: [0, 1, 0] }} />
+                    <Ground meshProps={{ position: [0, 0, 0] }} />
+                </Physics>
+            </HoldingContext.Provider>
         </Suspense>
     </>;
 }

@@ -1,18 +1,19 @@
 import { RapierRigidBody } from "@react-three/rapier";
-import { createContext, useContext, useRef, useState } from "react";
+import { createContext, RefObject, useContext, useRef, useState } from "react";
 import * as THREE from 'three';
 
 type HoldingContextProps = {
     heldItem?: RapierRigidBody;
     setHeldItem: (newValue?: RapierRigidBody) => void;
-    holdingTarget?: THREE.Vector3;
-    setHoldingTarget?: (target: THREE.Vector3) => void;
+    holdingTarget?: RefObject<THREE.Vector3 | undefined>;
+    setHoldingTarget: (target?: THREE.Vector3) => void;
 }
 
 const HoldingContext = createContext<HoldingContextProps>({
     heldItem: undefined,
     holdingTarget: undefined,
-    setHeldItem: () => { }
+    setHeldItem: () => { },
+    setHoldingTarget: () => { }
 });
 
 type HoldingContextProviderProps = {
@@ -26,7 +27,7 @@ function HoldingContextProvider({ children }: HoldingContextProviderProps) {
     return <HoldingContext value={{
         heldItem,
         setHeldItem,
-        holdingTarget: holdingTarget.current,
+        holdingTarget: holdingTarget,
         setHoldingTarget: (target) => {
             holdingTarget.current = target;
         },

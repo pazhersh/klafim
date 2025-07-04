@@ -66,8 +66,8 @@ export default function Card({
     }, [value, mesh]);
 
     useFrame(() => {
-        if (rigidBodyRef.current && holdingTarget && heldItem === rigidBodyRef.current) {
-            const movementVector = holdingTarget.clone().sub(rigidBodyRef.current.translation());
+        if (rigidBodyRef.current && holdingTarget?.current && heldItem === rigidBodyRef.current) {
+            const movementVector = holdingTarget?.current.clone().sub(rigidBodyRef.current.translation());
             if (movementVector.length() < 0.5) {
                 this.rigidBody.resetForces(true);
             }
@@ -79,6 +79,9 @@ export default function Card({
                 rigidBodyRef.current.resetForces(true);
                 rigidBodyRef.current.addForce(movementForce, true);
             }
+        }
+        else {
+            rigidBodyRef.current?.resetForces(true);
         }
     });
 
