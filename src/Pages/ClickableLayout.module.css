@@ -1,0 +1,5 @@
+.clickable {
+    pointer-events: all;
+    width: 100%;
+    height: 100%;
+}

@@ -4,6 +4,7 @@ import DeckPreview from '../../Components/DeckPreview';
 import ExcelTable from '../../ExcelTable/ExcelTable';
 import useTableSelectionStore from '../../useTableSelectionStore';
 import styles from './UploadExcelPage.module.css';
+import NavBar from '../../Components/NavBar';
 
 export default function UploadExcelPage() {
     const [sheet, setSheet] = useState<WorkSheet>();
@@ -22,6 +23,8 @@ export default function UploadExcelPage() {
     const cardValues = Array.from(selections.values()).map((selection) => selection.value);
 
     return <div className={styles.container}>
+        <NavBar />
+
         <div className={`${styles.pane} ${styles.tableContainer}`}>
             <input type='file' onChange={async (event) => onChange(event.target.files?.[0])} className='table-header' />
             {sheet && <div className={styles.tableData}>
