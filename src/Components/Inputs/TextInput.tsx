@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-
 type TextInputProps = {
     startValue?: string;
     onCancel: () => void;

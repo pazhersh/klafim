@@ -1,5 +1,3 @@
-import useTableSelectionStore from "../useTableSelectionStore";
-
 type DeckPreviewProps = {
     values: string[];
 }

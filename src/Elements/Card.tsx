@@ -1,12 +1,12 @@
-import { ThreeEvent, useFrame, useLoader } from "@react-three/fiber";
-import { ElementComponentProps } from "./types";
-import { GLTFLoader } from "three/examples/jsm/Addons.js";
-import { CollisionEnterPayload, RapierRigidBody, RigidBody } from "@react-three/rapier";
-import { CanvasTexture, Euler, MeshBasicMaterial, MOUSE, Quaternion, Vector3, type Material, type Mesh } from "three";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { ThreeEvent, useFrame } from "@react-three/fiber";
+import { RapierRigidBody, RigidBody } from "@react-three/rapier";
 import { Image } from 'image-js';
+import { useContext, useEffect, useMemo, useRef } from "react";
+import { CanvasTexture, MeshBasicMaterial, MOUSE, Quaternion, Vector3, type Material, type Mesh } from "three";
+import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import { flipQuaternion, splitTextByMaxLength } from "../utils";
 import HoldingContext from "./HoldingContext";
+import { ElementComponentProps } from "./types";
 
 // TODO: load in advance (make a bootstrapper)
 const gltfLoader = new GLTFLoader();

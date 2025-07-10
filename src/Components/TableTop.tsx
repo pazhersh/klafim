@@ -1,14 +1,14 @@
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
 import { Suspense } from 'react';
 import * as THREE from 'three';
 import { Deck as DeckData } from '../decksUtils';
-import Ground from './Ground';
 
-import Deck from './Deck';
-import HoldingContext from './HoldingContext';
-import HoldingPlane from './HoldingPlane';
-import OrbitControls from './OrbitControls';
+import Deck from '../Elements/Deck';
+import Ground from '../Elements/Ground';
+import HoldingContext from '../Elements/HoldingContext';
+import HoldingPlane from '../Elements/HoldingPlane';
+import OrbitControls from '../Elements/OrbitControls';
 import styles from './TableTop.module.css';
 
 // TODO: move to using useThree to set camera

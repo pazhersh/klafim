@@ -1,10 +1,10 @@
-import { useCallback, useRef, useState } from "react";
-import { Deck as DeckData } from "../decksUtils";
-import Card, { boundingBox } from "./Card";
-import { ElementComponentProps, MeshProps } from "./types";
-import * as THREE from 'three';
 import { RapierRigidBody } from "@react-three/rapier";
+import { useRef } from "react";
+import * as THREE from 'three';
+import { Deck as DeckData } from "../decksUtils";
 import { flipQuaternion } from "../utils";
+import { ElementComponentProps } from "./types";
+import Card, { boundingBox } from "./Card";
 
 type DeckProps = ElementComponentProps & {
     deck: DeckData;

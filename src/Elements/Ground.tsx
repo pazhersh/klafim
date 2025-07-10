@@ -1,6 +1,5 @@
 import { RigidBody } from "@react-three/rapier";
 import { ElementComponentProps } from './types';
-import { Vector3 } from "three";
 
 const width = 100;
 const height = 100;
