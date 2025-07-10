@@ -1,33 +1,16 @@
-import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/rapier';
 import { Suspense } from 'react';
-import * as THREE from 'three';
-import { Deck as DeckData } from '../decksUtils';
 
-import Deck from '../Elements/Deck';
 import Ground from '../Elements/Ground';
 import HoldingContext from '../Elements/HoldingContext';
 import HoldingPlane from '../Elements/HoldingPlane';
 import OrbitControls from '../Elements/OrbitControls';
-import styles from './TableTop.module.css';
-
-// TODO: move to using useThree to set camera
-const camera = new THREE.PerspectiveCamera(75);
-camera.position.copy(new THREE.Vector3(0.0, 4.0, -2.0));
-camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 type TableTopProps = {
-    className?: string;
-    decks: DeckData[];
+    children: React.ReactNode;
 }
 
-export default function CanvasWrapper({ className, ...tableTopProps }: TableTopProps) {
-    return <Canvas className={`${styles.canvas} ${className ?? ''}`} camera={camera} >
-        <TableTop {...tableTopProps} />
-    </Canvas>;
-}
-
-function TableTop({ decks }: TableTopProps) {
+export default function TableTop({ children }: TableTopProps) {
     return <>
         <ambientLight intensity={Math.PI / 2} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
@@ -42,9 +25,7 @@ function TableTop({ decks }: TableTopProps) {
         >
             <HoldingContext.Provider>
                 <Physics timeStep="vary">
-                    {decks.map((deck, index) =>
-                        <Deck key={deck.name} deck={deck} translation={[2 * index, 0, 0]} />
-                    )}
+                    {children}
                     <HoldingPlane width={100} height={100} meshProps={{ position: [0, 1.5, 0] }} />
                     <Ground meshProps={{ position: [0, 0, 0] }} />
                 </Physics>
