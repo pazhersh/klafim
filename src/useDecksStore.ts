@@ -40,4 +40,30 @@ export default create<DeckStore>()(persist((set) => ({
     updateDeck: (id: string, deck: Deck) => set((state) => ({
         decks: new Map(state.decks).set(id, deck),
     })),
-}), { name: DECKS_KEY }))
+}), {
+    name: DECKS_KEY,
+    storage: {
+        getItem: (name) => {
+            const rawStore = localStorage.getItem(name);
+            if (!rawStore) {
+                return null;
+            }
+            const store = JSON.parse(rawStore);
+            return {
+                ...store,
+                state: {
+                    decks: new Map(store.state.decks)
+                }
+            }
+        },
+        setItem: (name, store) => {
+            localStorage.setItem(name, JSON.stringify({
+                ...store,
+                state: {
+                    decks: Array.from(store.state.decks.entries())
+                }
+            }))
+        },
+        removeItem: (name) => localStorage.removeItem(name)
+    }
+}))
