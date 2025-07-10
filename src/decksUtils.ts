@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 export type Deck = {
     name: string;
     cardValues: string[];
@@ -30,7 +32,7 @@ export function saveDecks(decks: Decks) {
     localStorage.setItem(DECKS_KEY, rawDecks);
 }
 
-export function initDecks(): Decks {
+export function initDecks() {
     if (!(DECKS_KEY in localStorage)) {
         const defaultDeck = {
             cardValues: defaultDeckValues,
@@ -39,8 +41,6 @@ export function initDecks(): Decks {
 
         saveDecks(new Map([[generateDeckId(), defaultDeck]]));
     }
-
-    return loadDecks();
 }
 
 export function addDeck(deck: Deck) {
