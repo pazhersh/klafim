@@ -10,7 +10,7 @@ type EditDeckProps = {
 }
 
 export function EditDeck({ id, deck }: EditDeckProps) {
-    const { updateDeck } = useDecksStore();
+    const { updateDeck, removeDeck } = useDecksStore();
 
     const onDeleteValue = (index: number) => {
         const cardValues = Array.from(deck.cardValues);
@@ -20,6 +20,17 @@ export function EditDeck({ id, deck }: EditDeckProps) {
             ...deck,
             cardValues
         });
+    }
+
+    const onDeleteDeck = () => {
+        removeDeck(id);
+    }
+
+    const onRenameDeck = (name: string) => {
+        updateDeck(id, {
+            ...deck,
+            name
+        })
     }
 
     const onEditValue = (index: number, newValue: string) => {
@@ -44,7 +55,7 @@ export function EditDeck({ id, deck }: EditDeckProps) {
 
     return <div className={styles.container}>
         <h3>
-            {deck.name}
+            <EditableWrapper value={deck.name} onEdit={onRenameDeck} onDelete={onDeleteDeck} />
         </h3>
         <p>cards:</p>
         <ul>

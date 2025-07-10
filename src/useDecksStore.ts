@@ -30,6 +30,7 @@ type DeckStore = {
     decks: Decks;
     createDeck: (deck: Deck) => void;
     updateDeck: (id: string, deck: Deck) => void;
+    removeDeck: (id: string) => void;
 }
 
 export default create<DeckStore>()(persist((set) => ({
@@ -40,6 +41,13 @@ export default create<DeckStore>()(persist((set) => ({
     updateDeck: (id: string, deck: Deck) => set((state) => ({
         decks: new Map(state.decks).set(id, deck),
     })),
+    removeDeck: (id: string) => set((state) => {
+        const newDecks = new Map(state.decks);
+        newDecks.delete(id);
+        return {
+            decks: newDecks
+        };
+    })
 }), {
     name: DECKS_KEY,
     storage: {
