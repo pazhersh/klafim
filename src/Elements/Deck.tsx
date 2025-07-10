@@ -1,10 +1,10 @@
 import { RapierRigidBody } from "@react-three/rapier";
 import { useRef } from "react";
 import * as THREE from 'three';
-import { Deck as DeckData } from "../decksUtils";
+import { Deck as DeckData } from '../useDecksStore';
 import { flipQuaternion } from "../utils";
-import { ElementComponentProps } from "./types";
 import Card, { boundingBox } from "./Card";
+import { ElementComponentProps } from "./types";
 
 type DeckProps = ElementComponentProps & {
     deck: DeckData;

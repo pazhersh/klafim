@@ -1,7 +1,6 @@
 import Creatable from "../../Components/Inputs/Creatable";
 import EditableWrapper from "../../Components/Inputs/EditableWrapper";
-import { Deck } from "../../decksUtils";
-import useDecksStore from "../../useDecksStore";
+import useDecksStore, { Deck } from "../../useDecksStore";
 import styles from './ManageDecks.module.css';
 
 type EditDeckProps = {

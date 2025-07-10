@@ -5,11 +5,12 @@ import ExcelTable from '../../ExcelTable/ExcelTable';
 import useTableSelectionStore from '../../useTableSelectionStore';
 import styles from './UploadExcelPage.module.css';
 import NavBar from '../../Components/NavBar';
-import { addDeck, Deck as DeckData, loadDecks, saveDecks } from '../../decksUtils';
+import useDecksStore from '../../useDecksStore';
 
 export default function UploadExcelPage() {
     const [sheet, setSheet] = useState<WorkSheet>();
     const [deckName, setDeckName] = useState('');
+    const { createDeck } = useDecksStore()
 
     const onExcelUpload = async (newFile?: File) => {
         if (!newFile) {
@@ -26,7 +27,7 @@ export default function UploadExcelPage() {
     const cardValues = Array.from(selections.values()).map((selection) => selection.value);
 
     const onSaveDeck = () => {
-        addDeck({ name: deckName, cardValues: cardValues.map(value => `${value}`) });
+        createDeck({ name: deckName, cardValues: cardValues.map(value => `${value}`) });
     };
 
     return <div className={styles.container}>
