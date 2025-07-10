@@ -1,9 +1,11 @@
 import styles from './ManageDecks.module.css';
 import NavBar from '../../Components/NavBar';
 import { useDecks } from '../../useDecks';
+import EditableWrapper from '../../Components/EditableWrapper';
+import { EditDeck } from './EditDeck';
 
 export default function ManageDecks() {
-    const { decks } = useDecks();
+    const { decks, updateDeck } = useDecks();
 
     return <div className={styles.container}>
         <NavBar />
@@ -13,14 +15,7 @@ export default function ManageDecks() {
         <h2>Available Decks:</h2>
         <div className={`${styles.deckList}`}>
             {
-                Array.from(decks.entries()).map(([id, deck]) => <div key={id} className={styles.deck}>
-                    <h3>
-                        {deck.name}
-                    </h3>
-                    <ul>
-                        {deck.cardValues.map((value) => <li key={value}>{value}</li>)}
-                    </ul>
-                </div>)
+                Array.from(decks.entries()).map(([id, deck]) => <EditDeck key={id} id={id} deck={deck} />)
             }
         </div>
     </div>
