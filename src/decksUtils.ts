@@ -16,8 +16,6 @@ const defaultDeckValues = [
 
 const DECKS_KEY = 'decks';
 
-// TODO: make hook
-
 function generateDeckId() {
     return crypto.randomUUID();
 }

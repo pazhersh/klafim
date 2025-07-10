@@ -10,7 +10,14 @@ export default function EditableWrapper({ value, onEdit, onDelete }: EditableWra
     const [isEditting, setIsEditting] = useState(false);
 
     return isEditting ?
-        <EditValue startValue={value} onCancel={() => setIsEditting(false)} onSave={onEdit} /> :
+        <EditValue
+            startValue={value}
+            onCancel={() => setIsEditting(false)}
+            onSave={!!onEdit ? (newValue) => {
+                onEdit(newValue);
+                setIsEditting(false);
+            } : undefined}
+        /> :
         <DisplayValue value={value} onDelete={onDelete} onEnterEdit={!!onEdit ? () => setIsEditting(true) : undefined} />;
 };
 
@@ -39,7 +46,7 @@ function EditValue({ startValue, onSave, onCancel }: EditValueProps) {
 
     return <div>
         <input type="text" value={value} onChange={(event) => setValue(event.target.value)} />
-        <button onClick={() => onSave?.(value)} disabled={!!onSave}>save</button>
+        <button onClick={() => onSave?.(value)} disabled={!onSave}>save</button>
         <button onClick={() => onCancel()}>cancel</button>
     </div>
 }

@@ -1,11 +1,10 @@
 import styles from './ManageDecks.module.css';
 import NavBar from '../../Components/NavBar';
-import { useDecks } from '../../useDecks';
-import EditableWrapper from '../../Components/EditableWrapper';
+import useDecksStore from '../../useDecksStore';
 import { EditDeck } from './EditDeck';
 
 export default function ManageDecks() {
-    const { decks, updateDeck } = useDecks();
+    const { decks } = useDecksStore();
 
     return <div className={styles.container}>
         <NavBar />
