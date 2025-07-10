@@ -1,18 +1,28 @@
 import { useCallback, useEffect, useState } from "react";
-import { addDeck, Deck, Decks, initDecks, loadDecks } from "./decksUtils";
+import { addDeck, Deck, Decks, initDecks, loadDecks, saveDecks } from "./decksUtils";
 
 export function useDecks() {
     const [decks, setDecks] = useState<Decks>(new Map());
 
+    const reloadDecks = useCallback(() => {
+        setDecks(loadDecks());
+    }, [setDecks]);
+
     useEffect(() => {
         initDecks();
-        setDecks(loadDecks());
-    }, []);
+        reloadDecks();
+    }, [reloadDecks]);
 
     const createDeck = useCallback((deck: Deck) => {
         addDeck(deck);
-        setDecks(loadDecks());
-    }, [])
+        reloadDecks();
+    }, [reloadDecks]);
 
-    return { decks, createDeck };
+    const updateDeck = useCallback((id: string, newDeck: Deck) => {
+        decks.set(id, newDeck);
+        saveDecks(decks);
+        reloadDecks();
+    }, [decks, reloadDecks])
+
+    return { decks, createDeck, updateDeck };
 }
