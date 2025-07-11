@@ -52,7 +52,7 @@ export default function UploadExcelPage() {
             placeholder for deck preview;
             <div style={{ overflow: 'auto' }}>
                 <h2>{deckName}</h2>
-                <DeckPreview values={cardValues} />
+                <DeckPreview deck={{ cardValues, name: 'placeholder' }} />
             </div>
         </div>
     </div>

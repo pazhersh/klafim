@@ -4,6 +4,7 @@ import EditDeckTitle from '../../Components/EditDeckTitle';
 import EditDeckValues from '../../Components/EditDeckValues';
 import NavBar from '../../Components/NavBar';
 import useDecksStore from '../../useDecksStore';
+import DeckPreview from '../../Components/DeckPreview';
 
 export default function ManageDeck() {
     const { deckId } = useParams();
@@ -27,5 +28,7 @@ export default function ManageDeck() {
         <EditDeckValues deckId={deckId} deck={deck} />
 
         <button onClick={onDelete}>delete deck</button>
+
+        <DeckPreview deck={deck} />
     </div>
 }

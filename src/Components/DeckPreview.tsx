@@ -1,9 +1,11 @@
+import { Deck } from "../useDecksStore";
+
 type DeckPreviewProps = {
-    values: string[];
+    deck: Deck;
 }
 
-export default function DeckPreview({ values }: DeckPreviewProps) {
+export default function DeckPreview({ deck }: DeckPreviewProps) {
     return <ul>
-        {values.map((value) => <li>{value}</li>)}
+        {deck.cardValues.map((value) => <li>{value}</li>)}
     </ul>;
 }
