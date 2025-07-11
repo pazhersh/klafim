@@ -5,6 +5,7 @@ import EditableWrapper from '../../Components/Inputs/EditableWrapper';
 import { useMemo } from 'react';
 import NavBar from '../../Components/NavBar';
 import Creatable from '../../Components/Inputs/Creatable';
+import EditDeckTitle from '../../Components/EditDeckTitle';
 
 export default function ManageDeck() {
     const { deckId } = useParams();
@@ -53,9 +54,9 @@ export default function ManageDeck() {
     return <div>
         <NavBar />
 
-        <h3>
-            <EditableWrapper value={deck?.name ?? 'test'} onEdit={onRename} />
-        </h3>
+        <h1>
+            <EditDeckTitle deckId={deckId} allowDelete={false} />
+        </h1>
 
         <ul>
             {deck.cardValues.map((value, index) => <li key={`${index}${value}`}>

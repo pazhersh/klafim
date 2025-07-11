@@ -3,6 +3,7 @@ import Creatable from "../../Components/Inputs/Creatable";
 import EditableWrapper from "../../Components/Inputs/EditableWrapper";
 import useDecksStore, { Deck } from "../../useDecksStore";
 import styles from './ManageDecks.module.css';
+import EditDeckTitle from "../../Components/EditDeckTitle";
 
 type EditDeckProps = {
     id: string;
@@ -20,17 +21,6 @@ export function EditDeck({ id, deck }: EditDeckProps) {
             ...deck,
             cardValues
         });
-    }
-
-    const onDeleteDeck = () => {
-        removeDeck(id);
-    }
-
-    const onRenameDeck = (name: string) => {
-        updateDeck(id, {
-            ...deck,
-            name
-        })
     }
 
     const onEditValue = (index: number, newValue: string) => {
@@ -55,7 +45,7 @@ export function EditDeck({ id, deck }: EditDeckProps) {
 
     return <div className={styles.container}>
         <h3>
-            <EditableWrapper value={deck.name} onEdit={onRenameDeck} onDelete={onDeleteDeck} />
+            <EditDeckTitle deckId={id} />
         </h3>
         <sup>
             <NavLink to={`./${id}`}>manage</NavLink>
