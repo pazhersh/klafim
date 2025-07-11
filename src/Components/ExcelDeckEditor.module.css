@@ -25,6 +25,16 @@
     border-radius: 15px;
 }
 
+.button.cell {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+}
+
+.selected.cell {
+    background-color: greenyellow;
+}
+
 .row {
     /* basing the height on what feels like a bug */
     /* TODO: try to rework that */
@@ -45,11 +55,5 @@
     left: 0;
     font-weight: bold;
     border-radius: 0 15px 15px 0;
-}
-
-.cellButton {
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-    border-radius: 15px;
+    white-space: nowrap;
 }
