@@ -6,6 +6,7 @@ import { useMemo } from 'react';
 import NavBar from '../../Components/NavBar';
 import Creatable from '../../Components/Inputs/Creatable';
 import EditDeckTitle from '../../Components/EditDeckTitle';
+import EditDeckValues from '../../Components/EditDeckValues';
 
 export default function ManageDeck() {
     const { deckId } = useParams();
@@ -58,16 +59,7 @@ export default function ManageDeck() {
             <EditDeckTitle deckId={deckId} allowDelete={false} />
         </h1>
 
-        <ul>
-            {deck.cardValues.map((value, index) => <li key={`${index}${value}`}>
-                <EditableWrapper
-                    value={value}
-                    onEdit={(newValue) => onEditValue(index, newValue)}
-                    onDelete={() => onDeleteValue(index)}
-                />
-            </li>)}
-            <li><Creatable onCreate={onCreateCard} /></li>
-        </ul>
+        <EditDeckValues deckId={deckId} deck={deck} />
 
         <button onClick={onDelete}>delete deck</button>
     </div>

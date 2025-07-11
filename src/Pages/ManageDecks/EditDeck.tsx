@@ -4,6 +4,7 @@ import EditableWrapper from "../../Components/Inputs/EditableWrapper";
 import useDecksStore, { Deck } from "../../useDecksStore";
 import styles from './ManageDecks.module.css';
 import EditDeckTitle from "../../Components/EditDeckTitle";
+import EditDeckValues from "../../Components/EditDeckValues";
 
 type EditDeckProps = {
     id: string;
@@ -52,15 +53,7 @@ export function EditDeck({ id, deck }: EditDeckProps) {
         </sup>
 
         <p>cards:</p>
-        <ul>
-            {deck.cardValues.map((value, index) => <li key={`${index}${value}`}>
-                <EditableWrapper
-                    value={value}
-                    onDelete={() => onDeleteValue(index)}
-                    onEdit={(newValue) => onEditValue(index, newValue)}
-                />
-            </li>)}
-            <li><Creatable onCreate={onCreateCard} /></li>
-        </ul>
+        <EditDeckValues deckId={id} deck={deck} />
+
     </div>;
 }
