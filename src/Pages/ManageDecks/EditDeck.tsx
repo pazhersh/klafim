@@ -12,38 +12,6 @@ type EditDeckProps = {
 }
 
 export function EditDeck({ id, deck }: EditDeckProps) {
-    const { updateDeck, removeDeck } = useDecksStore();
-
-    const onDeleteValue = (index: number) => {
-        const cardValues = Array.from(deck.cardValues);
-        cardValues.splice(index, 1);
-
-        updateDeck(id, {
-            ...deck,
-            cardValues
-        });
-    }
-
-    const onEditValue = (index: number, newValue: string) => {
-        const cardValues = Array.from(deck.cardValues);
-        cardValues[index] = newValue;
-
-        updateDeck(id, {
-            ...deck,
-            cardValues
-        });
-    }
-
-    const onCreateCard = (newValue: string) => {
-        const cardValues = Array.from(deck.cardValues);
-        cardValues.push(newValue);
-
-        updateDeck(id, {
-            ...deck,
-            cardValues
-        });
-    }
-
     return <div className={styles.container}>
         <h3>
             <EditDeckTitle deckId={id} />
