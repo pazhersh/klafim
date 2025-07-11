@@ -11,7 +11,7 @@ type DeckPreviewProps = {
 
 // TODO: move to using useThree to set camera
 const camera = new THREE.PerspectiveCamera(75);
-camera.position.copy(new THREE.Vector3(0.0, 3.0, -2.0));
+camera.position.copy(new THREE.Vector3(0.0, 2, -2.0));
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 export default function DeckPreview({ deck }: DeckPreviewProps) {

@@ -1,4 +1,7 @@
 .previewContainer {
-    width: 800px;
+    width: 600px;
     height: 800px;
+    border-radius: 50px;
+    margin: 30px;
+    overflow: hidden;
 }
