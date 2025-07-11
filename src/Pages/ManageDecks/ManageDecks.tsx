@@ -17,7 +17,7 @@ export default function ManageDecks() {
             {
                 Array.from(decks.entries()).map(([id, deck]) => <EditDeck key={id} id={id} deck={deck} />)
             }
-            <Creatable defaultValue={`Deck #${decks.size}`} onCreate={(deckName) => createDeck({ name: deckName, cardValues: [] })} />
+            <Creatable defaultValue={`Deck #${decks.size + 1}`} onCreate={(deckName) => createDeck({ name: deckName, cardValues: [] })} />
         </div>
     </div>
 }

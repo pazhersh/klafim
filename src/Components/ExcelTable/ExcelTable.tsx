@@ -1,5 +1,5 @@
 import xlsx from 'xlsx';
-import useTableSelectionStore from '../useTableSelectionStore';
+import useTableSelectionStore from '../../useTableSelectionStore';
 import styles from './ExcelTable.module.css';
 
 export default function ExcelTable({ sheet }) {

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import xlsx, { WorkSheet } from 'xlsx';
 import DeckPreview from '../../Components/DeckPreview';
-import ExcelTable from '../../ExcelTable/ExcelTable';
+import ExcelTable from '../../Components/ExcelTable/ExcelTable';
 import useTableSelectionStore from '../../useTableSelectionStore';
 import styles from './UploadExcelPage.module.css';
 import NavBar from '../../Components/NavBar';

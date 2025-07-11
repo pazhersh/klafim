@@ -1,3 +1,4 @@
+import { NavLink } from "react-router";
 import Creatable from "../../Components/Inputs/Creatable";
 import EditableWrapper from "../../Components/Inputs/EditableWrapper";
 import useDecksStore, { Deck } from "../../useDecksStore";
@@ -56,6 +57,10 @@ export function EditDeck({ id, deck }: EditDeckProps) {
         <h3>
             <EditableWrapper value={deck.name} onEdit={onRenameDeck} onDelete={onDeleteDeck} />
         </h3>
+        <sup>
+            <NavLink to={`./${id}`}>manage</NavLink>
+        </sup>
+
         <p>cards:</p>
         <ul>
             {deck.cardValues.map((value, index) => <li key={`${index}${value}`}>
