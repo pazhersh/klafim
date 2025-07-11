@@ -35,16 +35,19 @@ export default function ExcelDeckEditor() {
                 <thead>
                     <tr>
                         <td></td>
-                        {headers.map((header) => <td className={`${styles.cell} ${styles.titleCell}`}>
+                        {headers.map((header) => <td className={`${styles.cell} ${styles.columnTitle}`}>
                             {header}
                         </td>)}
                     </tr>
                 </thead>
                 <tbody>
                     {data.map((rowData, row) => <tr className={styles.row}>
-                        <td className={`${styles.cell} ${styles.titleCell}`}>{row}</td>
-                        {headers.map((header, column) => <td className={`${styles.cell} ${styles.dataCell}`}>
-                            <button className={`${styles.cellButton} ${'getItemAt([column, row])' ? styles.selectedCellButton : ''}`} onClick={() => onCellClick({ row, column, value: rowData[header] })}>
+                        <td className={`${styles.cell} ${styles.rowTitle}`}>{row}</td>
+                        {headers.map((header, column) => <td className={`${styles.cell} ${styles.dataContainer}`}>
+                            <button
+                                className={`${styles.cellButton} ${'getItemAt([column, row])' ? styles.selectedCellButton : ''}`}
+                                onClick={() => onCellClick({ row, column, value: rowData[header] })}
+                            >
                                 {rowData[header]}
                             </button>
                         </td>)}
