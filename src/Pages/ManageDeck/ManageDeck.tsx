@@ -6,6 +6,7 @@ import NavBar from '../../Components/NavBar';
 import useDecksStore from '../../useDecksStore';
 import DeckPreview from '../../Components/DeckPreview';
 import styles from './ManageDeck.module.css'
+import ExcelDeckEditor from '../../Components/ExcelDeckEditor';
 
 export default function ManageDeck() {
     const { deckId } = useParams();
@@ -29,6 +30,10 @@ export default function ManageDeck() {
         <EditDeckValues deckId={deckId} deck={deck} />
 
         <button onClick={onDelete}>delete deck</button>
+
+        <div className={styles.excelContainer}>
+            <ExcelDeckEditor />
+        </div>
 
         <div className={styles.previewContainer}>
             <DeckPreview deck={deck} />

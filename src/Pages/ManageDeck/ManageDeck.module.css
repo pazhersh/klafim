@@ -5,3 +5,9 @@
     margin: 30px;
     overflow: hidden;
 }
+
+.excelContainer {
+    width: 600px;
+    height: 800px;
+    margin: 30px;
+}
