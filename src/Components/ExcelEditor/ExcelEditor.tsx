@@ -7,20 +7,28 @@ import type { CellCoordinates } from './types';
 type ExcelDeckEditorProps = {
     onCellSelection?: (value: string, cell: CellCoordinates) => void,
     onCellDeselection?: (cell: CellCoordinates) => void,
-}
+    onMultiCellSelection?: (coordinates: Map<CellCoordinates, string>) => void,
+    onMultiCellDeselection?: (coordinates: CellCoordinates[]) => void
+};
+
+type DataType = string | number | undefined | null;
 
 // TODO: if there are preformance issues - it's probably because of all the redundant iterations
 export default function ExcelDeckEditor({
     onCellSelection = () => { },
     onCellDeselection = () => { },
+    onMultiCellSelection = () => { },
+    onMultiCellDeselection = () => { }
 }: ExcelDeckEditorProps) {
     const [sheet, setSheet] = useState<WorkSheet>();
 
-    const data = useMemo<Record<string, string | number | undefined | null>[] | undefined>(() => !sheet ? undefined : xlsx.utils.sheet_to_json(sheet, {
+    const data = useMemo<Record<string, DataType>[] | undefined>(() => !sheet ? undefined : xlsx.utils.sheet_to_json(sheet, {
         skipHidden: false,
         blankrows: false,
         defval: null
     }), [sheet])
+
+    const headers = Object.keys(data?.[0] ?? {});
 
     const [selectedItems, setSelectedItems] = useState<CellCoordinates[]>([])
 
@@ -29,14 +37,19 @@ export default function ExcelDeckEditor({
             (selection) => (selection.row === row && selection.column === column)
         );
 
+    const getValue = ({ row, column }: CellCoordinates) => {
+        const columnName = headers.at(column);
+
+        if (columnName) {
+            return data?.at(row)?.[columnName];
+        }
+    };
+
     const selectItem = ({ row, column }: CellCoordinates) => {
         if (!findSelection({ row, column })) {
             setSelectedItems([...selectedItems, { row, column }]);
 
-            const columnName = headers.at(column);
-            if (columnName) {
-                onCellSelection(data?.at(row)?.[columnName]?.toString() ?? '', { row, column });
-            }
+            onCellSelection(getValue({ row, column })?.toString() ?? '', { row, column });
         }
     };
 
@@ -70,6 +83,12 @@ export default function ExcelDeckEditor({
             const itemsToAdd = dataCoordinates
                 .filter(({ row, column }) => selectedItems.every((selection) => (selection.row !== row || selection.column !== column)));
             setSelectedItems([...selectedItems, ...itemsToAdd]);
+
+            const newSelectionMap = new Map(itemsToAdd
+                .map((coordinate) => ([coordinate, getValue(coordinate)?.toString()] as [CellCoordinates, string | undefined]))
+                .filter(([_, value]) => value) as [CellCoordinates, string][]);
+
+            onMultiCellSelection(newSelectionMap);
         }
     };
 
@@ -79,6 +98,7 @@ export default function ExcelDeckEditor({
         if (!data) {
             return;
         }
+
 
         const dataCoordinates = headers.map((_, column) => ({ row, column }));
         if (selectedInRow.length === headers.length) {
@@ -91,6 +111,12 @@ export default function ExcelDeckEditor({
             const itemsToAdd = dataCoordinates
                 .filter(({ row, column }) => selectedItems.every((selection) => (selection.row !== row || selection.column !== column)));
             setSelectedItems([...selectedItems, ...itemsToAdd]);
+
+            const newSelectionMap = new Map(itemsToAdd
+                .map((coordinate) => ([coordinate, getValue(coordinate)?.toString()] as [CellCoordinates, string | undefined]))
+                .filter(([_, value]) => value) as [CellCoordinates, string][]);
+
+            onMultiCellSelection(newSelectionMap);
         }
     };
 
@@ -102,7 +128,6 @@ export default function ExcelDeckEditor({
         }
     };
 
-    const headers = Object.keys(data?.[0] ?? {});
 
     const onExcelUpload = async (newFile?: File) => {
         if (!newFile) {

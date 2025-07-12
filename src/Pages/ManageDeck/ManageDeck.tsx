@@ -13,7 +13,7 @@ export default function ManageDeck() {
     const { deckId } = useParams();
     const { decks, removeDeck } = useDecksStore();
 
-    const { selections, onCellSelection, onCellDeselection } = useTableSelectionState();
+    const { selections, onCellSelection, onCellDeselection, onMultiCellsDeselection, onMultiCellsSelection } = useTableSelectionState();
 
     const deck = useMemo(() => !deckId ? undefined : decks.get(deckId), [decks])
 
@@ -40,7 +40,12 @@ export default function ManageDeck() {
         <button onClick={onDelete}>delete deck</button>
 
         <div className={styles.excelContainer}>
-            <ExcelEditor onCellSelection={onCellSelection} onCellDeselection={onCellDeselection} />
+            <ExcelEditor
+                onCellSelection={onCellSelection}
+                onMultiCellSelection={onMultiCellsSelection}
+                onCellDeselection={onCellDeselection}
+                onMultiCellDeselection={onMultiCellsDeselection}
+            />
         </div>
 
         <div className={styles.previewContainer}>
