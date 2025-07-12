@@ -35,9 +35,11 @@ type DeckStore = {
 
 export default create<DeckStore>()(persist((set) => ({
     decks: new Map([[generateDeckId(), defaultDeck]]),
-    createDeck: (deck: Deck) => set((state) => ({
-        decks: new Map(state.decks).set(generateDeckId(), deck)
-    })),
+    createDeck: (deck: Deck) => {
+        const newDeckId = generateDeckId();
+        set((state) => ({ decks: new Map(state.decks).set(newDeckId, deck) }));
+        return newDeckId;
+    },
     updateDeck: (id: string, deck: Deck) => set((state) => ({
         decks: new Map(state.decks).set(id, deck),
     })),
