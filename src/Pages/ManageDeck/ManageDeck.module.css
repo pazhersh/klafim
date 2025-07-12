@@ -11,3 +11,8 @@
     height: 800px;
     margin: 30px;
 }
+
+.tableSelection {
+    width: fit-content;
+    background-color: greenyellow;
+}

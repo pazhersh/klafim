@@ -11,9 +11,16 @@ import useTableSelectionState from '../../Components/ExcelEditor/useTableSelecti
 
 export default function ManageDeck() {
     const { deckId } = useParams();
-    const { decks, removeDeck } = useDecksStore();
+    const { decks, removeDeck, updateDeck } = useDecksStore();
 
-    const { selections, onCellSelection, onCellDeselection, onMultiCellsDeselection, onMultiCellsSelection } = useTableSelectionState();
+    const {
+        selections: tableSelection,
+        onCellSelection,
+        onCellDeselection,
+        onMultiCellsDeselection,
+        onMultiCellsSelection,
+        resetSelection
+    } = useTableSelectionState();
 
     const deck = useMemo(() => !deckId ? undefined : decks.get(deckId), [decks])
 
@@ -23,6 +30,14 @@ export default function ManageDeck() {
 
     const onDelete = () => removeDeck(deckId);
 
+    const onSaveTableCards = () => {
+        updateDeck(deckId, {
+            ...deck,
+            cardValues: [...deck.cardValues, ...tableSelection]
+        });
+        resetSelection()
+    };
+
     return <div>
         <NavBar />
 
@@ -30,11 +45,17 @@ export default function ManageDeck() {
             <EditDeckTitle deckId={deckId} allowDelete={false} />
         </h1>
 
+        <h2> cards </h2>
         <EditDeckValues deckId={deckId} deck={deck} />
-        {!selections.length ? null :
-            <ul>
-                {selections.map(value => <li key={value}>{value}</li>)}
-            </ul>
+
+
+        {!tableSelection.length ? null :
+            <div className={styles.tableSelection}>
+                <ul className={styles.tableSelection}>
+                    {tableSelection.map(value => <li key={value}>{value}</li>)}
+                </ul>
+                <button onClick={onSaveTableCards}>Save cards</button>
+            </div>
         }
 
         <button onClick={onDelete}>delete deck</button>

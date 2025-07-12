@@ -34,5 +34,14 @@ export default function useTableSelectionState() {
         setValues(newValues);
     };
 
-    return { selections, onCellSelection, onCellDeselection, onMultiCellsSelection, onMultiCellsDeselection };
+    const resetSelection = () => setValues(new Map());
+
+    return {
+        selections,
+        onCellSelection,
+        onCellDeselection,
+        onMultiCellsSelection,
+        onMultiCellsDeselection,
+        resetSelection
+    };
 }
