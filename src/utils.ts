@@ -20,3 +20,11 @@ export function splitTextByMaxLength(text: string, maxLineLength: number) {
 }
 
 export const flipQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
+
+type ClassName = string | undefined | false | null;
+export function cx(...classes: (ClassName | (() => ClassName))[]) {
+    return classes
+        .map((cls) => typeof cls === 'function' ? cls() : cls)
+        .filter((cls) => typeof cls === 'string' && cls)
+        .join(' ');
+}

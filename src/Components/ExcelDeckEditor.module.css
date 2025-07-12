@@ -35,6 +35,10 @@
     background-color: greenyellow;
 }
 
+.partiallySelected.cell {
+    background-color: green;
+}
+
 .row {
     /* basing the height on what feels like a bug */
     /* TODO: try to rework that */

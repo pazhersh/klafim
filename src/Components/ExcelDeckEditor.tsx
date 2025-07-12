@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import styles from './ExcelDeckEditor.module.css'
 import xlsx, { WorkSheet } from 'xlsx';
+import { cx } from '../utils';
 
 type CellCoordinates = {
     row: number;
@@ -108,7 +109,16 @@ export default function ExcelDeckEditor() {
                         <td></td>
                         {headers.map((header, column) => <td className={`${styles.cell} ${styles.columnTitle}`}>
                             <button
-                                className={`${styles.cell} ${styles.columnTitle} ${styles.button}`}
+                                className={cx(
+                                    styles.cell,
+                                    styles.columnTitle,
+                                    styles.button,
+                                    () => {
+                                        const selectionLength = data.map((_, row) => findSelection({ row, column })).filter(a => a).length;
+                                        if (selectionLength === data.length) return styles.selected;
+                                        if (selectionLength > 0 && selectionLength < data.length) return styles.partiallySelected;
+                                    }
+                                )}
                                 onClick={() => onColumnTitleClick(column)}
                             >
                                 <p>{header}</p>
@@ -121,7 +131,16 @@ export default function ExcelDeckEditor() {
                     {data.map((rowData, row) => <tr className={styles.row}>
                         <td className={`${styles.cell} ${styles.rowTitle}`}>
                             <button
-                                className={`${styles.cell} ${styles.rowTitle} ${styles.button}`}
+                                className={cx(
+                                    styles.cell,
+                                    styles.rowTitle,
+                                    styles.button,
+                                    () => {
+                                        const selectionLength = headers.map((_, column) => findSelection({ row, column })).filter(a => a).length;
+                                        if (selectionLength === data.length) return styles.selected;
+                                        if (selectionLength > 0 && selectionLength < data.length) return styles.partiallySelected;
+                                    }
+                                )}
                                 onClick={() => onRowTitleClick(row)}
                             >
                                 {row} {'>'}
