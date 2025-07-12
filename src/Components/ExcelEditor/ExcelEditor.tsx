@@ -78,16 +78,18 @@ export default function ExcelDeckEditor({
                 .filter((selection) => dataCoordinates.some(({ row, column }) => (selection.row === row && selection.column === column)));
 
             const newSelectedItems = selectedItems.filter((selection) => !itemsToRemove.includes(selection));
+
             setSelectedItems(newSelectedItems);
+            onMultiCellDeselection(itemsToRemove);
         } else {
             const itemsToAdd = dataCoordinates
                 .filter(({ row, column }) => selectedItems.every((selection) => (selection.row !== row || selection.column !== column)));
-            setSelectedItems([...selectedItems, ...itemsToAdd]);
 
             const newSelectionMap = new Map(itemsToAdd
                 .map((coordinate) => ([coordinate, getValue(coordinate)?.toString()] as [CellCoordinates, string | undefined]))
                 .filter(([_, value]) => value) as [CellCoordinates, string][]);
 
+            setSelectedItems([...selectedItems, ...itemsToAdd]);
             onMultiCellSelection(newSelectionMap);
         }
     };
@@ -106,16 +108,18 @@ export default function ExcelDeckEditor({
                 .filter((selection) => dataCoordinates.some(({ row, column }) => (selection.row === row && selection.column === column)));
 
             const newSelectedItems = selectedItems.filter((selection) => !itemsToRemove.includes(selection));
+
             setSelectedItems(newSelectedItems);
+            onMultiCellDeselection(itemsToRemove);
         } else {
             const itemsToAdd = dataCoordinates
                 .filter(({ row, column }) => selectedItems.every((selection) => (selection.row !== row || selection.column !== column)));
-            setSelectedItems([...selectedItems, ...itemsToAdd]);
 
             const newSelectionMap = new Map(itemsToAdd
                 .map((coordinate) => ([coordinate, getValue(coordinate)?.toString()] as [CellCoordinates, string | undefined]))
                 .filter(([_, value]) => value) as [CellCoordinates, string][]);
 
+            setSelectedItems([...selectedItems, ...itemsToAdd]);
             onMultiCellSelection(newSelectionMap);
         }
     };
