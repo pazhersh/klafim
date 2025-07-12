@@ -8,6 +8,45 @@ type EditDeckValuesProps = {
     deck: Deck;
 }
 
+export function useEditDeckValues({ deckId, deck }: Partial<EditDeckValuesProps>) {
+    const { updateDeck } = useDecksStore();
+
+    if (!deck || !deckId) {
+        return {
+            onEditValue: () => { },
+            onDeleteValue: () => { },
+            onCreateCard: () => { }
+        };
+    }
+
+    const onEditValue = (index: number, newValue: string) => {
+        const cardValues = deck.cardValues;
+        cardValues[index] = newValue;
+
+        updateDeck(deckId, {
+            ...deck,
+            cardValues,
+        });
+    }
+
+    const onDeleteValue = (index: number) => {
+        const cardValues = deck.cardValues;
+        cardValues.splice(index, 1);
+
+        updateDeck(deckId, {
+            ...deck,
+            cardValues,
+        });
+    }
+
+    const onCreateCard = (newValue: string) => updateDeck(deckId, {
+        ...deck,
+        cardValues: [newValue, ...deck.cardValues]
+    })
+
+    return { onEditValue, onDeleteValue, onCreateCard };
+}
+
 export default function EditDeckValues({ deckId, deck }: EditDeckValuesProps) {
     const { updateDeck } = useDecksStore();
 
