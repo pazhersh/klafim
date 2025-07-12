@@ -52,7 +52,8 @@ export default function ManageDeck() {
 
         <h2> cards </h2>
 
-        <ul>
+        <ul className={styles.cardsList}>
+            <li><Creatable onCreate={onCreateCard} /></li>
             {deck.cardValues.map((value, index) => <li key={`${index}${value}`}>
                 <EditableWrapper
                     value={value}
@@ -60,17 +61,20 @@ export default function ManageDeck() {
                     onDelete={() => onDeleteValue(index)}
                 />
             </li>)}
-            <li><Creatable onCreate={onCreateCard} /></li>
+
+            {!tableSelection.length ? null :
+                <>
+                    <li>
+                        <button className={styles.tableSelection} onClick={onSaveTableCards}>Save cards</button>
+                    </li>
+                    {tableSelection.map(value => <li key={value} className={styles.tableSelection}>{value}</li>)}
+                    <li>
+                        <button className={styles.tableSelection} onClick={onSaveTableCards}>Save cards</button>
+                    </li>
+                </>
+            }
         </ul>
 
-        {!tableSelection.length ? null :
-            <div className={styles.tableSelection}>
-                <ul className={styles.tableSelection}>
-                    {tableSelection.map(value => <li key={value}>{value}</li>)}
-                </ul>
-                <button onClick={onSaveTableCards}>Save cards</button>
-            </div>
-        }
 
         <button onClick={onDelete}>delete deck</button>
 
