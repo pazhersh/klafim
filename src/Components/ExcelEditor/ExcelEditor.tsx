@@ -1,22 +1,26 @@
 import { useMemo, useState } from 'react';
-import styles from './ExcelDeckEditor.module.css'
+import styles from './ExcelEditor.module.css'
 import xlsx, { WorkSheet } from 'xlsx';
-import { cx } from '../utils';
+import { cx } from '../../utils';
+import type { CellCoordinates } from './types';
 
-type CellCoordinates = {
-    row: number;
-    column: number;
+type ExcelDeckEditorProps = {
+    onCellSelection?: (value: string, cell: CellCoordinates) => void,
+    onCellDeselection?: (cell: CellCoordinates) => void,
 }
 
-export default function ExcelDeckEditor() {
+// TODO: if there are preformance issues - it's probably because of all the redundant iterations
+export default function ExcelDeckEditor({
+    onCellSelection = () => { },
+    onCellDeselection = () => { },
+}: ExcelDeckEditorProps) {
     const [sheet, setSheet] = useState<WorkSheet>();
 
-    const data = useMemo<(string | number | undefined)[][] | undefined>(() => !sheet ? undefined : xlsx.utils.sheet_to_json(sheet, {
+    const data = useMemo<Record<string, string | number | undefined | null>[] | undefined>(() => !sheet ? undefined : xlsx.utils.sheet_to_json(sheet, {
         skipHidden: false,
         blankrows: false,
         defval: null
     }), [sheet])
-
 
     const [selectedItems, setSelectedItems] = useState<CellCoordinates[]>([])
 
@@ -28,15 +32,24 @@ export default function ExcelDeckEditor() {
     const selectItem = ({ row, column }: CellCoordinates) => {
         if (!findSelection({ row, column })) {
             setSelectedItems([...selectedItems, { row, column }]);
+
+            const columnName = headers.at(column);
+            if (columnName) {
+                onCellSelection(data?.at(row)?.[columnName]?.toString() ?? '', { row, column });
+            }
         }
     };
 
     const deselectItem = ({ row, column }: CellCoordinates) => {
-        setSelectedItems(
-            selectedItems.filter(
-                ({ row: selectedRow, column: selectedColumn }) => !(selectedRow === row && selectedColumn === column)
-            )
-        );
+        if (findSelection({ row, column })) {
+            setSelectedItems(
+                selectedItems.filter(
+                    ({ row: selectedRow, column: selectedColumn }) => !(selectedRow === row && selectedColumn === column)
+                )
+            );
+
+            onCellDeselection({ row, column });
+        }
     };
 
     const onColumnTitleClick = (column: number) => {
@@ -46,12 +59,15 @@ export default function ExcelDeckEditor() {
             return;
         }
 
+        const dataCoordinates = data.map((_roots, row) => ({ row, column }));
         if (selectedInColumn.length === data.length) {
-            const newSelectedItems = selectedItems
-                .filter((selection) => selectedInColumn.every((selectionInColumn) => selectionInColumn !== selection));
+            const itemsToRemove = selectedItems
+                .filter((selection) => dataCoordinates.some(({ row, column }) => (selection.row === row && selection.column === column)));
+
+            const newSelectedItems = selectedItems.filter((selection) => !itemsToRemove.includes(selection));
             setSelectedItems(newSelectedItems);
         } else {
-            const itemsToAdd = data.map((_roots, row) => ({ row, column }))
+            const itemsToAdd = dataCoordinates
                 .filter(({ row, column }) => selectedItems.every((selection) => (selection.row !== row || selection.column !== column)));
             setSelectedItems([...selectedItems, ...itemsToAdd]);
         }
@@ -64,12 +80,15 @@ export default function ExcelDeckEditor() {
             return;
         }
 
+        const dataCoordinates = headers.map((_, column) => ({ row, column }));
         if (selectedInRow.length === headers.length) {
-            const newSelectedItems = selectedItems
-                .filter((selection) => selectedInRow.every((selectionInColumn) => selectionInColumn !== selection));
+            const itemsToRemove = selectedItems
+                .filter((selection) => dataCoordinates.some(({ row, column }) => (selection.row === row && selection.column === column)));
+
+            const newSelectedItems = selectedItems.filter((selection) => !itemsToRemove.includes(selection));
             setSelectedItems(newSelectedItems);
         } else {
-            const itemsToAdd = headers.map((_, column) => ({ row, column }))
+            const itemsToAdd = dataCoordinates
                 .filter(({ row, column }) => selectedItems.every((selection) => (selection.row !== row || selection.column !== column)));
             setSelectedItems([...selectedItems, ...itemsToAdd]);
         }
