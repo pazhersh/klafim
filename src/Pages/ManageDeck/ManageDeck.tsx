@@ -10,6 +10,7 @@ import ExcelEditor from '../../Components/ExcelEditor/ExcelEditor';
 import useTableSelectionState from '../../Components/ExcelEditor/useTableSelectionState';
 import EditableWrapper from '../../Components/Inputs/EditableWrapper';
 import Creatable from '../../Components/Inputs/Creatable';
+import { cx } from '../../utils';
 
 export default function ManageDeck() {
     const { deckId } = useParams();
@@ -53,8 +54,8 @@ export default function ManageDeck() {
         <h2> cards </h2>
 
         <ul className={styles.cardsList}>
-            <li><Creatable onCreate={onCreateCard} /></li>
-            {deck.cardValues.map((value, index) => <li key={`${index}${value}`}>
+            <li className={styles.cardListValue}><Creatable onCreate={onCreateCard} /></li>
+            {deck.cardValues.map((value, index) => <li key={`${index}${value}`} className={styles.cardListValue}>
                 <EditableWrapper
                     value={value}
                     onEdit={(newValue) => onEditValue(index, newValue)}
@@ -64,11 +65,11 @@ export default function ManageDeck() {
 
             {!tableSelection.length ? null :
                 <>
-                    <li>
+                    <li className={styles.cardListValue}>
                         <button className={styles.tableSelection} onClick={onSaveTableCards}>Save cards</button>
                     </li>
-                    {tableSelection.map(value => <li key={value} className={styles.tableSelection}>{value}</li>)}
-                    <li>
+                    {tableSelection.map(value => <li key={value} className={cx(styles.tableSelection, styles.cardListValue)}>{value}</li>)}
+                    <li className={styles.cardListValue}>
                         <button className={styles.tableSelection} onClick={onSaveTableCards}>Save cards</button>
                     </li>
                 </>
@@ -77,6 +78,9 @@ export default function ManageDeck() {
 
 
         <button onClick={onDelete}>delete deck</button>
+        {!tableSelection.length ? null :
+            <button className={styles.tableSelection} onClick={onSaveTableCards}>Save cards</button>
+        }
 
         <div className={styles.excelContainer}>
             <ExcelEditor

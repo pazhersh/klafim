@@ -7,6 +7,12 @@
     overflow-x: auto;
 }
 
+.cardListValue {
+    min-width: fit-content;
+    max-width: 300px;
+    margin: 3px 15px;
+}
+
 .tableSelection {
     width: fit-content;
     background-color: greenyellow;
