@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { v4 as uuidv4 } from 'uuid';
 
 export type Deck = {
     name: string;
@@ -23,7 +24,7 @@ const defaultDeck = {
 }
 
 function generateDeckId() {
-    return crypto.randomUUID();
+    return uuidv4();
 }
 
 type DeckStore = {
