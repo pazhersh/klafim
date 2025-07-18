@@ -9,6 +9,7 @@ type Link = {
 const links: Link[] = [
     { to: '/manage-decks', label: 'Edit Decks' },
     { to: '/table-top', label: 'Table-Top' },
+    { to: '/about', label: 'About' },
 ];
 
 function Seperator() {

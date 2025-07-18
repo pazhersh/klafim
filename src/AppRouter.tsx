@@ -4,6 +4,7 @@ import TableTopPage from './Pages/TableTop/TableTopPage';
 import ClickableLayout from "./Pages/ClickableLayout";
 import ManageDecks from "./Pages/ManageDecks/ManageDecks";
 import ManageDeck from "./Pages/ManageDeck/ManageDeck";
+import AboutPage from "./Pages/AboutPage";
 
 export default function AppRouter() {
     return <BrowserRouter>
@@ -13,6 +14,7 @@ export default function AppRouter() {
                 <Route path='/*' element={<NotFoundPage />} />
                 <Route path='/manage-decks' element={<ManageDecks />} />
                 <Route path='/manage-decks/:deckId' element={<ManageDeck />} />
+                <Route path='/about' element={<AboutPage />} />
             </Route>
         </Routes>
     </BrowserRouter >
