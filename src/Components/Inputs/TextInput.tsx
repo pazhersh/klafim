@@ -10,7 +10,7 @@ export default function TextInput({ startValue = '', onSave, onCancel }: TextInp
     const [value, setValue] = useState(startValue);
 
     return <div>
-        <input type="text" value={value} onChange={(event) => setValue(event.target.value)} />
+        <input type="text" value={value} onChange={(event) => setValue(event.target.value)} autoFocus />
         <button onClick={() => onSave?.(value)} disabled={!onSave}>save</button>
         <button onClick={() => onCancel()}>cancel</button>
     </div>
