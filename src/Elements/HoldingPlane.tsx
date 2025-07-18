@@ -1,16 +1,16 @@
-import { useContext } from "react"
-import { MeshProps } from "./types"
-import HoldingContext from "./HoldingContext";
 import { ThreeEvent } from "@react-three/fiber";
+import { useContext, useEffect, useRef } from "react";
+import { Mesh } from "three";
+import HoldingContext from "./HoldingContext";
 
 type HoldingPlainProps = {
     width: number,
     height: number,
-    meshProps?: MeshProps,
 }
 
-export default function HoldingPlane({ width, height, meshProps }: HoldingPlainProps) {
-    const { setHoldingTarget, setHeldItem } = useContext(HoldingContext);
+export default function HoldingPlane({ width, height }: HoldingPlainProps) {
+    const { setHoldingTarget, setHeldItem, holdingHeight } = useContext(HoldingContext);
+    const meshRef = useRef<Mesh | null>(null);
 
     const hold = (event: ThreeEvent<MouseEvent>) => {
         setHoldingTarget(event.point);
@@ -21,9 +21,15 @@ export default function HoldingPlane({ width, height, meshProps }: HoldingPlainP
         setHeldItem(undefined);
     };
 
+    useEffect(() => {
+        meshRef.current?.position.setY(holdingHeight);
+        console.log(meshRef.current?.position);
+    }, [holdingHeight]);
+
     return <mesh
+        ref={meshRef}
         rotation={[-Math.PI / 2, 0, 0]}
-        visible={false} {...meshProps}
+        visible={false}
         onPointerMove={hold}
         onPointerUp={letGo}
         onPointerLeave={letGo}

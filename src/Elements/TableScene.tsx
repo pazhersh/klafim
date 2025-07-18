@@ -26,7 +26,7 @@ export default function TableScene({ children }: TableSceneProps) {
             <HoldingContext.Provider>
                 <Physics timeStep="vary">
                     {children}
-                    <HoldingPlane width={100} height={100} meshProps={{ position: [0, 1.5, 0] }} />
+                    <HoldingPlane width={100} height={100} />
                     <Ground meshProps={{ position: [0, 0, 0] }} />
                 </Physics>
             </HoldingContext.Provider>

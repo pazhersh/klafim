@@ -28,3 +28,11 @@ export function cx(...classes: (ClassName | (() => ClassName))[]) {
         .filter((cls) => typeof cls === 'string' && cls)
         .join(' ');
 }
+
+export function interpolate(a: number, b: number, t: number) {
+    if (t < 0 || t > 1) {
+        return undefined;
+    }
+
+    return (a * (1 - t)) + (b * t);
+}

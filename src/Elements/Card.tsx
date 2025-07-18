@@ -1,10 +1,10 @@
-import { ThreeEvent, useFrame } from "@react-three/fiber";
+import { ThreeEvent, useFrame, useThree } from "@react-three/fiber";
 import { RapierRigidBody, RigidBody } from "@react-three/rapier";
 import { Image } from 'image-js';
 import { useContext, useEffect, useMemo, useRef } from "react";
 import { CanvasTexture, MeshBasicMaterial, MOUSE, Quaternion, Vector3, type Material, type Mesh } from "three";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
-import { flipQuaternion, splitTextByMaxLength } from "../utils";
+import { flipQuaternion, interpolate, splitTextByMaxLength } from "../utils";
 import HoldingContext from "./HoldingContext";
 import { ElementComponentProps } from "./types";
 
@@ -33,7 +33,8 @@ export default function Card({
     } = {},
     value
 }: CardProps) {
-    const { holdingTarget, setHeldItem, heldItem } = useContext(HoldingContext);
+    const { holdingTarget, setHeldItem, heldItem, setHoldingHeight } = useContext(HoldingContext);
+    const { camera } = useThree();
 
     const rigidBodyRef = useRef<RapierRigidBody>(null);
 
@@ -94,6 +95,9 @@ export default function Card({
         }
 
         event.stopPropagation();
+
+        setHoldingHeight(interpolate(event.point.y, camera.position.y, 0.3));
+
         // TODO: typing fix
         (onPointerDown as (event: ThreeEvent<PointerEvent>) => void | undefined)?.(event);
         rigidBodyRef.current && setHeldItem(rigidBodyRef.current);
