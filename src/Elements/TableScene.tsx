@@ -1,7 +1,7 @@
 import { Physics } from '@react-three/rapier';
 import { Suspense } from 'react';
 
-import Ground from '../Elements/Ground';
+import Table from '../Elements/Table';
 import HoldingContext from '../Elements/HoldingContext';
 import HoldingPlane from '../Elements/HoldingPlane';
 import OrbitControls from '../Elements/OrbitControls';
@@ -27,7 +27,7 @@ export default function TableScene({ children }: TableSceneProps) {
                 <Physics timeStep="vary">
                     {children}
                     <HoldingPlane width={100} height={100} />
-                    <Ground meshProps={{ position: [0, 0, 0] }} />
+                    <Table meshProps={{ position: [0, 0, 0] }} />
                 </Physics>
             </HoldingContext.Provider>
         </Suspense>

@@ -7,7 +7,7 @@ const width = 100;
 const height = 100;
 const depth = 10;
 
-export default function Ground({ meshProps, rigidBodyProps }: ElementComponentProps) {
+export default function Table({ meshProps, rigidBodyProps }: ElementComponentProps) {
     const colorMap = useLoader(TextureLoader, '/public/IMG_20250719_141810.jpg')
     return <mesh {...meshProps} >
         <mesh rotation={[-Math.PI / 2, 0, 0]}>
