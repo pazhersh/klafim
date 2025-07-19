@@ -10,10 +10,10 @@ import { ElementComponentProps } from "./types";
 
 // TODO: load in advance (make a bootstrapper)
 const gltfLoader = new GLTFLoader();
-const cardGLTF = await gltfLoader.loadAsync('/assets/card.glb');
+const cardGLTF = await gltfLoader.loadAsync('/public/card.glb');
 const gltfMesh = cardGLTF.scene.children[0] as Mesh; // not the cleanest but hey, it's just a side-project
 const gltfMaterial = gltfMesh.material as Material;
-const baseTexture = await Image.load('/assets/card.png');
+const baseTexture = await Image.load('/public/card.png');
 
 export const boundingBox = gltfMesh.geometry.boundingBox!.clone();
 
