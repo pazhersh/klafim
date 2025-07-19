@@ -96,7 +96,14 @@ export default function Card({
 
         event.stopPropagation();
 
-        setHoldingHeight(interpolate(event.point.y, camera.position.y, 0.3));
+        const holdingHeight = Math.min(
+            Math.max(
+                interpolate(event.point.y, camera.position.y, 0.3) ?? event.point.y,
+                event.point.y + 0.2
+            ),
+            camera.position.y
+        );
+        setHoldingHeight(holdingHeight);
 
         // TODO: typing fix
         (onPointerDown as (event: ThreeEvent<PointerEvent>) => void | undefined)?.(event);
