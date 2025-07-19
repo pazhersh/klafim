@@ -1,5 +1,5 @@
 import { extend, ThreeElement, useThree } from '@react-three/fiber'
-import { MOUSE } from 'three'
+import { MOUSE, TOUCH } from 'three'
 import { OrbitControls as ThreeOrbitControls } from 'three-stdlib'
 
 extend({ ThreeOrbitControls })
@@ -17,7 +17,11 @@ export default function OrbitControls(props: Partial<ThreeElement<typeof ThreeOr
         mouseButtons={{
             LEFT: undefined,
             MIDDLE: MOUSE.PAN,
-            RIGHT: MOUSE.ROTATE
+            RIGHT: MOUSE.ROTATE,
+        }}
+        touches={{
+            ONE: undefined,
+            TWO: TOUCH.DOLLY_PAN,
         }}
         {...props}
     />
