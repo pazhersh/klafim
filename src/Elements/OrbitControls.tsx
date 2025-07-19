@@ -21,7 +21,7 @@ export default function OrbitControls(props: Partial<ThreeElement<typeof ThreeOr
         }}
         touches={{
             ONE: undefined,
-            TWO: TOUCH.DOLLY_PAN,
+            TWO: TOUCH.DOLLY_ROTATE,
         }}
         {...props}
     />
