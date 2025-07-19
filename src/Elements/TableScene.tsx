@@ -2,8 +2,8 @@ import { Physics } from '@react-three/rapier';
 import { Suspense } from 'react';
 
 import Table from '../Elements/Table';
-import HoldingContext from '../Elements/HoldingContext';
-import HoldingPlane from '../Elements/HoldingPlane';
+import HoldContext from './HoldContext';
+import HoldPlane from './HoldPlane';
 import OrbitControls from '../Elements/OrbitControls';
 
 type TableSceneProps = {
@@ -23,13 +23,13 @@ export default function TableScene({ children }: TableSceneProps) {
                 <meshStandardMaterial color={'orange'} />
             </mesh>}
         >
-            <HoldingContext.Provider>
+            <HoldContext.Provider>
                 <Physics timeStep="vary">
                     {children}
-                    <HoldingPlane width={100} height={100} />
+                    <HoldPlane width={100} height={100} />
                     <Table meshProps={{ position: [0, 0, 0] }} />
                 </Physics>
-            </HoldingContext.Provider>
+            </HoldContext.Provider>
         </Suspense>
     </>;
 }

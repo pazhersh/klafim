@@ -5,7 +5,7 @@ import { useContext, useEffect, useMemo, useRef } from "react";
 import { CanvasTexture, MeshBasicMaterial, MOUSE, Quaternion, Vector3, type Material, type Mesh } from "three";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import { flipQuaternion, interpolate, splitTextByMaxLength } from "../utils";
-import HoldingContext from "./HoldingContext";
+import HoldContext from "./HoldContext";
 import { ElementComponentProps } from "./types";
 
 // TODO: load in advance (make a bootstrapper)
@@ -33,7 +33,7 @@ export default function Card({
     } = {},
     value
 }: CardProps) {
-    const { holdingTarget, setHeldItem, heldItem, setHoldingHeight } = useContext(HoldingContext);
+    const { holdTarget, setHeldItem, heldItem, setHoldHeight } = useContext(HoldContext);
     const { camera } = useThree();
 
     const rigidBodyRef = useRef<RapierRigidBody>(null);
@@ -67,8 +67,8 @@ export default function Card({
     }, [value, mesh]);
 
     useFrame(() => {
-        if (rigidBodyRef.current && holdingTarget?.current && heldItem === rigidBodyRef.current) {
-            const movementVector = holdingTarget?.current.clone().sub(rigidBodyRef.current.translation());
+        if (rigidBodyRef.current && holdTarget?.current && heldItem === rigidBodyRef.current) {
+            const movementVector = holdTarget?.current.clone().sub(rigidBodyRef.current.translation());
             if (movementVector.length() < 0.5) {
                 rigidBodyRef.current.resetForces(true);
             }
@@ -96,14 +96,14 @@ export default function Card({
 
         event.stopPropagation();
 
-        const holdingHeight = Math.min(
+        const holdHeight = Math.min(
             Math.max(
                 interpolate(event.point.y, camera.position.y, 0.3) ?? event.point.y,
                 event.point.y + 0.2
             ),
             camera.position.y
         );
-        setHoldingHeight(holdingHeight);
+        setHoldHeight(holdHeight);
 
         // TODO: typing fix
         (onPointerDown as (event: ThreeEvent<PointerEvent>) => void | undefined)?.(event);
