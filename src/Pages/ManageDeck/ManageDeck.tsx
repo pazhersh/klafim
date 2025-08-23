@@ -4,7 +4,7 @@ import EditDeckTitle from '../../Components/EditDeckTitle';
 import EditDeckValues, { useEditDeckValues } from '../../Components/EditDeckValues';
 import NavBar from '../../Components/NavBar';
 import useDecksStore from '../../useDecksStore';
-import DeckPreview from '../../Components/DeckPreview';
+import DeckPreview from '../../Components/DeckPreview/DeckPreview';
 import styles from './ManageDeck.module.css'
 import ExcelEditor from '../../Components/ExcelEditor/ExcelEditor';
 import useTableSelectionState from '../../Components/ExcelEditor/useTableSelectionState';

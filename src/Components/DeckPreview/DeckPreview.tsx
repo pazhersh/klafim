@@ -1,10 +1,11 @@
 import { Canvas } from "@react-three/fiber";
 import * as THREE from 'three';
 
-import { Deck as DeckData } from "../useDecksStore";
-import Deck from '../Elements/Deck';
-import TableScene from '../Elements/TableScene';
+import { Deck as DeckData } from "../../useDecksStore";
+import Deck from '../../Elements/Deck';
+import TableScene from '../../Elements/TableScene';
 import { useMemo } from "react";
+import styles from './DeckPreview.module.css';
 
 type DeckPreviewProps = {
     deck: DeckData;
@@ -20,9 +21,11 @@ export default function DeckPreview({ deck }: DeckPreviewProps) {
         return camera
     }, [])
 
-    return <Canvas camera={camera}>
-        <TableScene>
-            <Deck deck={deck} />
-        </TableScene>
-    </Canvas>;
+    return <div className={styles.container}>
+        <Canvas camera={camera}>
+            <TableScene>
+                <Deck deck={deck} />
+            </TableScene>
+        </Canvas>;
+    </div>
 }
