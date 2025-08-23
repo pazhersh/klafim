@@ -11,9 +11,12 @@ export default function EditableWrapper({ value, onEdit, onDelete }: EditableWra
     const [isEditting, setIsEditting] = useState(false);
 
     return !isEditting ? <div>
-        {onDelete && <button onClick={() => onDelete()}>X</button>}
         {value}
         {onEdit && <button onClick={() => setIsEditting(true)}>edit</button>}
+        {onDelete && <button onClick={() => {
+            const userConfirmed = window.confirm(`Delete "${value}"?`);
+            if (userConfirmed) onDelete();
+        }}>delete</button>}
     </div> :
         <TextInput
             startValue={value}
