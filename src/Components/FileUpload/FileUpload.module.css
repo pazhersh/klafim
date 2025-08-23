@@ -8,6 +8,11 @@
     border-radius: 51px;
 }
 
+.container:hover {
+    background-color: antiquewhite;
+    /* TODO: change on drag-hover */
+}
+
 .upload {
     display: none;
 }
