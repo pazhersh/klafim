@@ -1,7 +1,7 @@
 .container {
     display: flex;
     flex-direction: row;
-    gap: 5px;
+    gap: 6px;
     padding: 0 6px;
     background: linear-gradient(white, transparent);
     border-end-end-radius: 15px;
