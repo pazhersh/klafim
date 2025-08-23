@@ -1,5 +1,5 @@
 import { RapierRigidBody } from "@react-three/rapier";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import * as THREE from 'three';
 import { Deck as DeckData } from '../useDecksStore';
 import { flipQuaternion } from "../utils";
@@ -9,6 +9,7 @@ import { ElementComponentProps } from "./types";
 type DeckProps = ElementComponentProps & {
     deck: DeckData;
     translation?: [number, number, number],
+    shuffle?: boolean;
 }
 
 const cardThickness = boundingBox.max.y;
@@ -22,13 +23,26 @@ function getRandomRotation() {
     return new THREE.Euler().setFromQuaternion(flipQuaternion.multiply(randQuaternion));
 }
 
-export default function Deck({ translation: [translateX, translateY, translateZ] = [0, 0, 0], deck }: DeckProps) {
+export default function Deck({ translation: [translateX, translateY, translateZ] = [0, 0, 0], deck, shuffle }: DeckProps) {
     const drawnCount = useRef(0); // Don't use state to not re-render
     const rigidBodyRefs = useRef<(RapierRigidBody | undefined)[]>([])
 
+    const cardValues = useMemo(() => {
+        if (!shuffle) {
+            return deck.cardValues;
+        }
+
+        const cards = [...deck.cardValues];
+        for (let currentIndex = deck.cardValues.length - 1; currentIndex >= 0; currentIndex--) {
+            const randomIndex = Math.floor(Math.random() * currentIndex);
+            [cards[currentIndex], cards[randomIndex]] = [cards[randomIndex], cards[currentIndex]]
+        }
+        return cards;
+    }, [deck, shuffle]);
+
     const handleDraw = (index) => {
         const rigidBody = rigidBodyRefs.current[index];
-        if (rigidBody && index === deck.cardValues.length - 1 - drawnCount.current) {
+        if (rigidBody && index === cardValues.length - 1 - drawnCount.current) {
             rigidBody.lockTranslations(false, false);
             rigidBody.lockRotations(false, false);
 
@@ -37,7 +51,7 @@ export default function Deck({ translation: [translateX, translateY, translateZ]
     }
 
     return <mesh>
-        {deck.cardValues.map((value, index) => (
+        {cardValues.map((value, index) => (
             <Card
                 key={value}
                 value={value}

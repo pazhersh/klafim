@@ -25,7 +25,7 @@ export default function TableTopPage() {
         <Canvas className={` ${styles.canvas}`} camera={camera} >
             <TableScene>
                 {deckValues.map((deck, index) =>
-                    <Deck key={deck.name} deck={deck} translation={[2 * index, 0, 0]} />
+                    <Deck key={deck.name} deck={deck} translation={[2 * index, 0, 0]} shuffle={true} />
                 )}
             </TableScene>
         </Canvas>
