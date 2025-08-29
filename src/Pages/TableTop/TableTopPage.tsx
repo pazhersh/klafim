@@ -47,7 +47,13 @@ export default function TableTopPage() {
             <Canvas className={styles.canvas} camera={camera} >
                 <TableScene>
                     {selectedDecks.map((deck, index) =>
-                        <DeckElement key={deck.name} deck={deck} translation={[2 * index, 0, 0]} shuffle={shouldShuffle} />
+                        <DeckElement
+                            key={deck.name}
+                            deck={deck}
+                            translation={[2 * index, 0, 0]}
+                            shuffle={shouldShuffle}
+                            shouldWriteTitle={selectedDecks.length > 1}
+                        />
                     )}
                 </TableScene>
             </Canvas>

@@ -3,15 +3,23 @@ import { useMemo, useRef } from "react";
 import * as THREE from 'three';
 import { Deck as DeckData } from '../useDecksStore';
 import { flipQuaternion } from "../utils";
-import Card, { boundingBox } from "./Card";
+import Card from "./Card";
 import { ElementComponentProps } from "./types";
+import { GLTFLoader } from "three/examples/jsm/Addons.js";
 
 type DeckProps = ElementComponentProps & {
     deck: DeckData;
-    translation?: [number, number, number],
+    shouldWriteTitle?: boolean;
+    translation?: [number, number, number];
     shuffle?: boolean;
 }
 
+// TODO: figure out a different solution for the thickness calculation
+const gltfLoader = new GLTFLoader();
+const cardGLTF = await gltfLoader.loadAsync('/public/card.glb');
+const gltfMesh = cardGLTF.scene.children[0] as THREE.Mesh; // not the cleanest but hey, it's just a side-project
+
+const boundingBox = gltfMesh.geometry.boundingBox!.clone();
 const cardThickness = boundingBox.max.y;
 
 function randOffset() {
@@ -23,7 +31,12 @@ function getRandomRotation() {
     return new THREE.Euler().setFromQuaternion(flipQuaternion.multiply(randQuaternion));
 }
 
-export default function Deck({ translation: [translateX, translateY, translateZ] = [0, 0, 0], deck, shuffle }: DeckProps) {
+export default function Deck({
+    translation: [translateX, translateY, translateZ] = [0, 0, 0],
+    deck,
+    shuffle,
+    shouldWriteTitle,
+}: DeckProps) {
     const drawnCount = useRef(0); // Don't use state to not re-render
     const rigidBodyRefs = useRef<(RapierRigidBody | undefined)[]>([])
 
@@ -54,7 +67,8 @@ export default function Deck({ translation: [translateX, translateY, translateZ]
         {cardValues.map((value, index) => (
             <Card
                 key={value}
-                value={value}
+                backText={shouldWriteTitle ? deck.name : undefined}
+                frontText={value}
                 rigidBodyProps={{
                     position: [randOffset() + translateX, (index + 1) * cardThickness + translateY, randOffset() + translateZ],
                     rotation: getRandomRotation(),
