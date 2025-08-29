@@ -23,6 +23,8 @@ export default function TableTopPage() {
 
     return !selectedDecks.length ?
         (<div className={styles.clickable}>
+            <NavBar />
+
             <h1>Choose your decks</h1>
 
             <input

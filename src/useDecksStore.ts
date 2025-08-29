@@ -18,6 +18,8 @@ const defaultDeckValues = [
     'On a scale of 0 to 100, how much do you think this deck-app improves the Fun Facts experiance?'
 ];
 
+const test_defaultDeckValues = Array.from({ length: 100 }, (_, i) => `card #${i}`);
+
 const defaultDeck = {
     cardValues: defaultDeckValues,
     name: 'Fun Facts Best Cards'

@@ -1,8 +1,7 @@
 import { ThreeEvent, useFrame, useThree } from "@react-three/fiber";
 import { RapierRigidBody, RigidBody } from "@react-three/rapier";
-import { Image } from 'image-js';
 import { useContext, useEffect, useMemo, useRef } from "react";
-import { CanvasTexture, MeshBasicMaterial, MOUSE, Quaternion, Vector3, type Material, type Mesh } from "three";
+import { CanvasTexture, MeshBasicMaterial, MeshStandardMaterial, MOUSE, Quaternion, Vector3, type Material, type Mesh } from "three";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import { flipQuaternion, interpolate, splitTextByMaxLength } from "../utils";
 import HoldContext from "./HoldContext";
@@ -12,8 +11,7 @@ import { ElementComponentProps } from "./types";
 const gltfLoader = new GLTFLoader();
 const cardGLTF = await gltfLoader.loadAsync('/public/card.glb');
 const gltfMesh = cardGLTF.scene.children[0] as Mesh; // not the cleanest but hey, it's just a side-project
-const gltfMaterial = gltfMesh.material as Material;
-const baseTexture = await Image.load('/public/card.png');
+const gltfMaterial = gltfMesh.material as MeshStandardMaterial;
 
 export const boundingBox = gltfMesh.geometry.boundingBox!.clone();
 
@@ -47,18 +45,23 @@ export default function Card({
     useEffect(() => {
         if (value && mesh) {
             // TODO: move to Material tsx
-            const canvas = baseTexture.getCanvas();
+            const canvas = document.createElement('canvas');
+            const image = gltfMaterial.type === 'MeshStandardMaterial' && gltfMaterial.map?.isTexture ? gltfMaterial.map.source.data as ImageBitmap : undefined;
+
+            canvas.width = image?.width ?? 1024;
+            canvas.height = image?.height ?? 1024;
             const context = canvas.getContext('2d')!;
+
+            image && context.drawImage(image, 0, 0, image.width, image.height);
 
             // top-left: 123, 277
             // width-height: 312, 480
             const lineHeight = 42;
             context.font = `${lineHeight}px serif`;
             const lines = splitTextByMaxLength(value, 10);
-
             lines.forEach((line, index) => {
                 context.fillText(line, 123, 277 + (lineHeight * (index + 1)), 480);
-            })
+            });
 
             const texture = new CanvasTexture(canvas);
             texture.flipY = false;

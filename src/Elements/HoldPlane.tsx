@@ -23,7 +23,6 @@ export default function HoldPlane({ width, height }: HoldPlainProps) {
 
     useEffect(() => {
         meshRef.current?.position.setY(holdHeight);
-        console.log(meshRef.current?.position);
     }, [holdHeight]);
 
     return <mesh

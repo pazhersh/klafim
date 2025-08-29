@@ -15,7 +15,6 @@
     "@dimforge/rapier3d": "^0.17.3",
     "@react-three/fiber": "^9.1.4",
     "@react-three/rapier": "^2.1.0",
-    "image-js": "^0.37.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router": "^7.6.2",
