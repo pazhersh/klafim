@@ -7,7 +7,8 @@
   "type": "commonjs",
   "main": "main.js",
   "scripts": {
-    "serve": "vite",
+    "serve": "vite --host",
+    "serve:dev": "vite",
     "build": "vite build"
   },
   "dependencies": {

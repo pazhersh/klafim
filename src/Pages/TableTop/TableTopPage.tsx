@@ -19,23 +19,35 @@ camera.lookAt(new THREE.Vector3(0, 0, 0));
 export default function TableTopPage() {
     const { decks } = useDecksStore();
     const [selectedDecks, setSelectedDecks] = useState<Deck[]>([]);
+    const [shouldShuffle, setShouldShuffle] = useState(true);
 
-    return !selectedDecks.length ? <div className={styles.clickable}>
-        <DecksPicker
-            decks={decks}
-            onSelect={setSelectedDecks}
-        />
-    </div> :
-        <div className={styles.container}>
+    return !selectedDecks.length ?
+        (<div className={styles.clickable}>
+            <h1>Choose your decks</h1>
+
+            <input
+                type='checkbox'
+                checked={shouldShuffle}
+                onChange={(event) => setShouldShuffle(event.target.checked)}
+            />
+            shuffle 'em
+
+            <DecksPicker
+                decks={decks}
+                onSelect={setSelectedDecks}
+            />
+        </div>)
+        :
+        (<div className={styles.container}>
             <div className={styles.overlay}>
                 <NavBar />
             </div>
-            <Canvas className={` ${styles.canvas}`} camera={camera} >
+            <Canvas className={styles.canvas} camera={camera} >
                 <TableScene>
                     {selectedDecks.map((deck, index) =>
-                        <DeckElement key={deck.name} deck={deck} translation={[2 * index, 0, 0]} shuffle={true} />
+                        <DeckElement key={deck.name} deck={deck} translation={[2 * index, 0, 0]} shuffle={shouldShuffle} />
                     )}
                 </TableScene>
             </Canvas>
-        </div>;
+        </div>);
 }
