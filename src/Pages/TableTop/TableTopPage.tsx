@@ -1,13 +1,15 @@
-import { useMemo } from 'react';
-import styles from './TableTopPage.module.css';
+import { useState } from 'react';
 import NavBar from '../../Components/NavBar';
+import type { Deck } from '../../useDecksStore';
 import useDecksStore from '../../useDecksStore';
+import styles from './TableTopPage.module.css';
 
 import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
 
-import Deck from '../../Elements/Deck';
+import DeckElement from '../../Elements/Deck';
 import TableScene from '../../Elements/TableScene';
+import DecksPicker from './DecksPicker';
 
 // TODO: move to using useThree to set camera
 const camera = new THREE.PerspectiveCamera(75);
@@ -15,19 +17,25 @@ camera.position.copy(new THREE.Vector3(0.0, 4.0, -2.0));
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 export default function TableTopPage() {
-    const { decks } = useDecksStore()
-    const deckValues = useMemo(() => Array.from(decks.values()), [decks])
+    const { decks } = useDecksStore();
+    const [selectedDecks, setSelectedDecks] = useState<Deck[]>([]);
 
-    return <div className={styles.container}>
-        <div className={styles.overlay}>
-            <NavBar />
-        </div>
-        <Canvas className={` ${styles.canvas}`} camera={camera} >
-            <TableScene>
-                {deckValues.map((deck, index) =>
-                    <Deck key={deck.name} deck={deck} translation={[2 * index, 0, 0]} shuffle={true} />
-                )}
-            </TableScene>
-        </Canvas>
-    </div>;
+    return !selectedDecks.length ? <div className={styles.clickable}>
+        <DecksPicker
+            decks={decks}
+            onSelect={setSelectedDecks}
+        />
+    </div> :
+        <div className={styles.container}>
+            <div className={styles.overlay}>
+                <NavBar />
+            </div>
+            <Canvas className={` ${styles.canvas}`} camera={camera} >
+                <TableScene>
+                    {selectedDecks.map((deck, index) =>
+                        <DeckElement key={deck.name} deck={deck} translation={[2 * index, 0, 0]} shuffle={true} />
+                    )}
+                </TableScene>
+            </Canvas>
+        </div>;
 }

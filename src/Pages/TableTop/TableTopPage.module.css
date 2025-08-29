@@ -4,6 +4,10 @@
     pointer-events: none;
 }
 
+.clickable {
+    pointer-events: all;
+}
+
 .overlay {
     position: absolute;
     pointer-events: all;
