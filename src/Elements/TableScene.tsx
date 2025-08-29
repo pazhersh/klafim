@@ -7,6 +7,7 @@ import OrbitControls from '../Elements/OrbitControls';
 import Table from '../Elements/Table';
 import HoldContext from './HoldContext';
 import HoldPlane from './HoldPlane';
+import CubeLoader from './CubeLoader';
 
 type TableSceneProps = {
     children: React.ReactNode;
@@ -29,10 +30,7 @@ export default function TableScene({ children }: TableSceneProps) {
         <OrbitControls />
 
         <Suspense
-            fallback={<mesh>
-                <boxGeometry args={[1, 1, 1]} />
-                <meshStandardMaterial color={'orange'} />
-            </mesh>}
+            fallback={<CubeLoader />}
         >
             <HoldContext.Provider>
                 <Physics timeStep="vary">
