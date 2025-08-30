@@ -1,16 +1,16 @@
-import { ThreeEvent, useFrame, useLoader, useThree } from "@react-three/fiber";
+import { ThreeEvent, useFrame, useLoader } from "@react-three/fiber";
 import { RapierRigidBody, RigidBody } from "@react-three/rapier";
-import { useContext, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { MOUSE, Quaternion, Vector3, type Mesh } from "three";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
-import { flipQuaternion, interpolate } from "../utils";
+import { flipQuaternion } from "../utils";
 import CardMaterial from "./CardMaterial";
-import HoldContext from "./HoldContext";
 import { ElementComponentProps } from "./types";
 
 type CardProps = ElementComponentProps & {
     backText?: string;
     frontText?: string;
+    disabled?: boolean;
 }
 
 export default function Card({
@@ -25,9 +25,10 @@ export default function Card({
     } = {},
     frontText,
     backText,
+    disabled,
 }: CardProps) {
-    const { holdTarget, setHeldItem, heldItem, setHoldHeight } = useContext(HoldContext);
-    const { camera } = useThree();
+    const isHolding = useRef(false);
+    const projectedClickPosition = useRef<Vector3 | undefined>(undefined);
 
     const rigidBodyRef = useRef<RapierRigidBody>(null);
 
@@ -38,9 +39,14 @@ export default function Card({
         [gltf]
     );
 
-    useFrame(() => {
-        if (rigidBodyRef.current && holdTarget?.current && heldItem === rigidBodyRef.current) {
-            const movementVector = holdTarget?.current.clone().sub(rigidBodyRef.current.translation());
+    useFrame((state) => {
+        if (rigidBodyRef.current && isHolding.current && projectedClickPosition.current) {
+
+            const target = new Vector3(state.pointer.x, state.pointer.y, projectedClickPosition.current.z)
+                .multiplyScalar(0.9)
+                .unproject(state.camera);
+
+            const movementVector = new Vector3().subVectors(target, rigidBodyRef.current.translation());
             if (movementVector.length() < 0.5) {
                 rigidBodyRef.current.resetForces(true);
             }
@@ -61,33 +67,26 @@ export default function Card({
         }
     });
 
-    const onMouseDown = (event: ThreeEvent<PointerEvent>) => {
+    const onMouseDown = useCallback((event: ThreeEvent<PointerEvent>) => {
+        (onPointerDown as (event: ThreeEvent<PointerEvent>) => void | undefined)?.(event);
+
         if (event.button !== MOUSE.LEFT) {
             return;
         }
 
         event.stopPropagation();
 
-        const holdHeight = Math.min(
-            Math.max(
-                interpolate(event.point.y, camera.position.y, 0.3) ?? event.point.y,
-                event.point.y + 0.2
-            ),
-            camera.position.y
-        );
-        setHoldHeight(holdHeight);
+        // Start dragging it
+        projectedClickPosition.current = event.point.clone().project(event.camera);
+        isHolding.current = true;
 
-        // TODO: typing fix
-        (onPointerDown as (event: ThreeEvent<PointerEvent>) => void | undefined)?.(event);
-        rigidBodyRef.current && setHeldItem(rigidBodyRef.current);
-
+        // Flip card if it's upside down
         const quaternion = rigidBodyRef.current && new Quaternion().copy(rigidBodyRef.current.rotation());
         const downwards = new Quaternion().setFromAxisAngle(new Vector3(0, 0, Math.PI / 2), -90);
-
         if (quaternion && (quaternion?.angleTo(downwards) < (Math.PI / 2))) {
             rigidBodyRef.current?.setRotation(quaternion.multiply(flipQuaternion), true);
         }
-    }
+    }, [onPointerDown, rigidBodyRef])
 
     return <RigidBody
         ref={(rigidBody) => {
@@ -100,12 +99,12 @@ export default function Card({
                 }
             }
         }}
-        colliders='hull'
+        colliders='cuboid'
         {...rigidBodyProps}
     >
         <primitive
             {...meshProps}
-            onPointerDown={onMouseDown}
+            onPointerDown={disabled ? undefined : onMouseDown}
             object={gltfMesh}
         >
             <CardMaterial frontText={frontText} backText={backText} />

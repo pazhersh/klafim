@@ -54,6 +54,9 @@ export default function Deck({
     }, [deck, shuffle]);
 
     const handleDraw = (index) => {
+        if (cardValues.length - index - 1 > drawnCount.current)
+            return;
+
         const rigidBody = rigidBodyRefs.current[index];
         if (rigidBody && index === cardValues.length - 1 - drawnCount.current) {
             rigidBody.lockTranslations(false, false);
@@ -66,6 +69,7 @@ export default function Deck({
     return <mesh>
         {cardValues.map((value, index) => (
             <Card
+                disabled={cardValues.length - index - 1 > drawnCount.current}
                 key={value}
                 backText={shouldWriteTitle ? deck.name : undefined}
                 frontText={value}
