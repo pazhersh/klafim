@@ -1,7 +1,7 @@
 import { ThreeEvent, useFrame, useLoader } from "@react-three/fiber";
 import { RapierRigidBody, RigidBody } from "@react-three/rapier";
 import { useCallback, useMemo, useRef } from "react";
-import { MOUSE, Quaternion, Vector3, type Mesh } from "three";
+import { MOUSE, Plane, Quaternion, Vector3, type Mesh } from "three";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import { flipQuaternion } from "../utils";
 import CardMaterial from "./CardMaterial";
@@ -12,6 +12,8 @@ type CardProps = ElementComponentProps & {
     frontText?: string;
     disabled?: boolean;
 }
+
+const HOLD_HEIGHT = 2;
 
 export default function Card({
     rigidBodyProps: {
@@ -28,7 +30,8 @@ export default function Card({
     disabled,
 }: CardProps) {
     const isHolding = useRef(false);
-    const projectedClickPosition = useRef<Vector3 | undefined>(undefined);
+    const projectedClickZ = useRef<number>(0);
+    const clickPosition = useRef<Vector3 | undefined>(undefined);
 
     const rigidBodyRef = useRef<RapierRigidBody>(null);
 
@@ -40,10 +43,11 @@ export default function Card({
     );
 
     useFrame((state) => {
-        if (rigidBodyRef.current && isHolding.current && projectedClickPosition.current) {
-            const target = new Vector3(state.pointer.x, state.pointer.y, projectedClickPosition.current.z)
-                .multiplyScalar(0.9)
-                .unproject(state.camera);
+        if (rigidBodyRef.current && isHolding.current && projectedClickZ.current && clickPosition.current) {
+            const target = new Vector3(state.pointer.x, state.pointer.y, projectedClickZ.current)
+                .unproject(state.camera)
+                .projectOnPlane(new Vector3(0, 1, 0))
+                .add({ x: 0, y: clickPosition.current.y + HOLD_HEIGHT, z: 0 });
 
             const movementVector = new Vector3().subVectors(target, rigidBodyRef.current.translation());
             if (movementVector.length() < 0.5) {
@@ -76,7 +80,8 @@ export default function Card({
         event.stopPropagation();
 
         // Start dragging it
-        projectedClickPosition.current = event.point.clone().project(event.camera);
+        clickPosition.current = event.point.clone();
+        projectedClickZ.current = event.point.clone().project(event.camera).z;
         isHolding.current = true;
 
         if (event.target && 'setPointerCapture' in event.target && typeof event.target.setPointerCapture === 'function') {
