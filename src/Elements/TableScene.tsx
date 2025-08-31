@@ -5,8 +5,6 @@ import { useLoader, useThree } from '@react-three/fiber';
 import { EquirectangularReflectionMapping, TextureLoader } from 'three';
 import OrbitControls from '../Elements/OrbitControls';
 import Table from '../Elements/Table';
-import HoldContext from './HoldContext';
-import HoldPlane from './HoldPlane';
 import CubeLoader from './CubeLoader';
 
 type TableSceneProps = {
@@ -32,13 +30,10 @@ export default function TableScene({ children }: TableSceneProps) {
         <Suspense
             fallback={<CubeLoader />}
         >
-            <HoldContext.Provider>
-                <Physics timeStep="vary">
-                    {children}
-                    <HoldPlane width={100} height={100} />
-                    <Table meshProps={{ position: [0, 0, 0] }} />
-                </Physics>
-            </HoldContext.Provider>
+            <Physics timeStep="vary">
+                {children}
+                <Table meshProps={{ position: [0, 0, 0] }} />
+            </Physics>
         </Suspense>
     </>;
 }
