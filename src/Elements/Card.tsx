@@ -1,11 +1,15 @@
 import { ThreeEvent, useFrame, useLoader } from "@react-three/fiber";
 import { RapierRigidBody, RigidBody } from "@react-three/rapier";
 import { useCallback, useMemo, useRef } from "react";
-import { MOUSE, Plane, Quaternion, Vector3, type Mesh } from "three";
+import { MOUSE, Quaternion, Vector3, type Mesh } from "three";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import { flipQuaternion } from "../utils";
 import CardMaterial from "./CardMaterial";
 import { ElementComponentProps } from "./types";
+
+export type CardRigidBodyUserData = {
+    disabled?: boolean;
+}
 
 type CardProps = ElementComponentProps & {
     backText?: string;
@@ -71,11 +75,11 @@ export default function Card({
     });
 
     const onMouseDown = useCallback((event: ThreeEvent<PointerEvent>) => {
-        (onPointerDown as (event: ThreeEvent<PointerEvent>) => void | undefined)?.(event);
-
-        if (event.button !== MOUSE.LEFT) {
+        if (event.button !== MOUSE.LEFT || (rigidBodyRef.current?.userData as CardRigidBodyUserData)?.disabled) {
             return;
         }
+
+        (onPointerDown as (event: ThreeEvent<PointerEvent>) => void | undefined)?.(event);
 
         event.stopPropagation();
 

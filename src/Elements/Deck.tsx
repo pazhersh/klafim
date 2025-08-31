@@ -3,7 +3,7 @@ import { useMemo, useRef } from "react";
 import * as THREE from 'three';
 import { Deck as DeckData } from '../useDecksStore';
 import { flipQuaternion } from "../utils";
-import Card from "./Card";
+import Card, { CardRigidBodyUserData } from "./Card";
 import { ElementComponentProps } from "./types";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 
@@ -37,7 +37,6 @@ export default function Deck({
     shuffle,
     shouldWriteTitle,
 }: DeckProps) {
-    const drawnCount = useRef(0); // Don't use state to not re-render
     const rigidBodyRefs = useRef<(RapierRigidBody | undefined)[]>([])
 
     const cardValues = useMemo(() => {
@@ -53,23 +52,25 @@ export default function Deck({
         return cards;
     }, [deck, shuffle]);
 
-    const handleDraw = (index) => {
-        if (cardValues.length - index - 1 > drawnCount.current)
-            return;
-
-        const rigidBody = rigidBodyRefs.current[index];
-        if (rigidBody && index === cardValues.length - 1 - drawnCount.current) {
+    const onCardClick = (index) => {
+        // Unlock clicked card
+        const rigidBody = rigidBodyRefs.current.at(index);
+        if (rigidBody) {
             rigidBody.lockTranslations(false, false);
             rigidBody.lockRotations(false, false);
 
-            drawnCount.current++;
+        }
+
+        // Enable next card for clicking
+        const nextRigidBody = rigidBodyRefs.current.at(-(index + 1));
+        if (nextRigidBody?.userData) {
+            (nextRigidBody.userData as CardRigidBodyUserData).disabled = false
         }
     }
 
     return <mesh>
         {cardValues.map((value, index) => (
             <Card
-                disabled={cardValues.length - index - 1 > drawnCount.current}
                 key={value}
                 backText={shouldWriteTitle ? deck.name : undefined}
                 frontText={value}
@@ -78,15 +79,12 @@ export default function Deck({
                     rotation: getRandomRotation(),
                     ref: ((rigidBody) => { rigidBodyRefs.current[index] = rigidBody ?? undefined }),
                     lockTranslations: true,
-                    lockRotations: true
+                    lockRotations: true,
+                    userData: { disabled: index === 0 } as CardRigidBodyUserData
                 }}
                 meshProps={{
-                    onPointerDown: (event) => {
-                        if (event.button !== THREE.MOUSE.LEFT) {
-                            return;
-                        }
-
-                        handleDraw(index);
+                    onPointerDown: () => {
+                        onCardClick(index);
                     }
                 }}
             />
