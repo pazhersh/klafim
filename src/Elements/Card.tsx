@@ -41,7 +41,6 @@ export default function Card({
 
     useFrame((state) => {
         if (rigidBodyRef.current && isHolding.current && projectedClickPosition.current) {
-
             const target = new Vector3(state.pointer.x, state.pointer.y, projectedClickPosition.current.z)
                 .multiplyScalar(0.9)
                 .unproject(state.camera);
@@ -80,6 +79,10 @@ export default function Card({
         projectedClickPosition.current = event.point.clone().project(event.camera);
         isHolding.current = true;
 
+        if (event.target && 'setPointerCapture' in event.target && typeof event.target.setPointerCapture === 'function') {
+            event.target?.setPointerCapture(event.pointerId);
+        }
+
         // Flip card if it's upside down
         const quaternion = rigidBodyRef.current && new Quaternion().copy(rigidBodyRef.current.rotation());
         const downwards = new Quaternion().setFromAxisAngle(new Vector3(0, 0, Math.PI / 2), -90);
@@ -87,6 +90,13 @@ export default function Card({
             rigidBodyRef.current?.setRotation(quaternion.multiply(flipQuaternion), true);
         }
     }, [onPointerDown, rigidBodyRef])
+    const onMouseUp = useCallback((event: ThreeEvent<PointerEvent>) => {
+        isHolding.current = false;
+
+        if (event.target && 'releasePointerCapture' in event.target && typeof event.target.releasePointerCapture === 'function') {
+            event.target?.releasePointerCapture(event.pointerId);
+        }
+    }, []);
 
     return <RigidBody
         ref={(rigidBody) => {
@@ -105,6 +115,7 @@ export default function Card({
         <primitive
             {...meshProps}
             onPointerDown={disabled ? undefined : onMouseDown}
+            onPointerUp={onMouseUp}
             object={gltfMesh}
         >
             <CardMaterial frontText={frontText} backText={backText} />
