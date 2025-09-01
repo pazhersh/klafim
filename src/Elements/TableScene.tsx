@@ -12,7 +12,7 @@ type TableSceneProps = {
 }
 
 export default function TableScene({ children }: TableSceneProps) {
-    const skyBox = useLoader(TextureLoader, '/public/PANO_20250719_170347.jpg');
+    const skyBox = useLoader(TextureLoader, '/assets/PANO_20250719_170347.jpg');
     const { scene } = useThree();
 
     useEffect(() => {

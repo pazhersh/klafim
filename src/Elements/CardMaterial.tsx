@@ -9,7 +9,7 @@ type CardMaterialProp = {
 };
 
 export default function CardMaterial({ backText, frontText }: CardMaterialProp) {
-    const cardGLTF = useLoader(GLTFLoader, '/public/card.glb');
+    const cardGLTF = useLoader(GLTFLoader, '/assets/card.glb');
     const gltfMesh = cardGLTF.scene.children[0] as Mesh; // not the cleanest but hey, it's just a side-project
     const gltfMaterial = gltfMesh.material as MeshStandardMaterial;
     const image = gltfMaterial.map?.isTexture && gltfMaterial.map.source.data

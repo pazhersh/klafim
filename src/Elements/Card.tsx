@@ -39,7 +39,7 @@ export default function Card({
 
     const rigidBodyRef = useRef<RapierRigidBody>(null);
 
-    const gltf = useLoader(GLTFLoader, '/public/card.glb');
+    const gltf = useLoader(GLTFLoader, '/assets/card.glb');
     const gltfMesh = useMemo(
         // not the cleanest but hey, it's just a side-project
         () => gltf.scene.children[0].clone() as Mesh,

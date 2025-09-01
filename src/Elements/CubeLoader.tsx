@@ -5,7 +5,7 @@ import { Mesh, TextureLoader } from "three"
 const ROTATION_SPEED = 0.005;
 
 export default function CubeLoader() {
-    const colorMap = useLoader(TextureLoader, '/public/loading.png');
+    const colorMap = useLoader(TextureLoader, '/assets/loading.png');
 
     const boxRef = useRef<Mesh>(null);
 

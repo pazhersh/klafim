@@ -15,12 +15,14 @@ type DeckProps = ElementComponentProps & {
 }
 
 // TODO: figure out a different solution for the thickness calculation
+let cardThickness: number;
 const gltfLoader = new GLTFLoader();
-const cardGLTF = await gltfLoader.loadAsync('/public/card.glb');
-const gltfMesh = cardGLTF.scene.children[0] as THREE.Mesh; // not the cleanest but hey, it's just a side-project
-
-const boundingBox = gltfMesh.geometry.boundingBox!.clone();
-const cardThickness = boundingBox.max.y;
+gltfLoader.load('/assets/card.glb', (cardGLTF) => {
+    const gltfMesh = cardGLTF.scene.children[0] as THREE.Mesh; // not the cleanest but hey, it's just a side-project
+    
+    const boundingBox = gltfMesh.geometry.boundingBox!.clone();
+    cardThickness = boundingBox.max.y;
+});
 
 function randOffset() {
     return (0.5 - Math.random()) / 10;
