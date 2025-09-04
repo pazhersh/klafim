@@ -8,7 +8,13 @@ This project lets you create and manage decks of cards from an uploaded Excel fi
 
 ## Running
 
-To run from source code you just need to go
+The simplest way to run is with docker
+
+```bash
+docker run pazhersh/klafim:latest
+```
+
+Running from source is an entire line longer:
 
 ```bash
 npm install
@@ -22,7 +28,7 @@ To build run the following commands:
 ```bash
 npm install
 npm run build
-docker run build . -t pazhersh/klafim:0.0.1
+docker run build . -t pazhersh/klafim:latest
 ```
 
 ## What it's really about
