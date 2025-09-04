@@ -10,7 +10,7 @@ type Link = {
 const links: Link[] = [
     { to: '/manage-decks', label: 'Edit Decks' },
     { to: '/table-top', label: 'Table-Top' },
-    // { to: '/about', label: 'About' },
+    { to: 'https://github.com/pazhersh/klafim/issues/new', label: 'Report a bug' }
 ];
 
 function Seperator() {
