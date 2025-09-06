@@ -8,7 +8,7 @@ const height = 100;
 const depth = 10;
 
 export default function Table({ meshProps, rigidBodyProps }: ElementComponentProps) {
-    const colorMap = useLoader(TextureLoader, '/assets/IMG_20250719_141810.jpg')
+    const colorMap = useLoader(TextureLoader, '/assets/table_texture.jpg')
     return <mesh {...meshProps} >
         <mesh position={[0, -1, 0,]}>
             <boxGeometry args={[width, 2, height]} />
