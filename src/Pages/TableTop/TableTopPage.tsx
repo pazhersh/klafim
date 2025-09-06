@@ -54,7 +54,7 @@ export default function TableTopPage() {
         (<div className={styles.clickable}>
             <NavBar />
 
-            { notFoundDeckIds 
+            { notFoundDeckIds.length
                 ? <NotFound resourceType='decks' resources={notFoundDeckIds}/> 
                 : null
             }
