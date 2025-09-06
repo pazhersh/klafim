@@ -8,7 +8,7 @@ type Link = {
 }
 
 const links: Link[] = [
-    { to: '/', label: 'klafim' },
+    { to: '/', label: 'Klafim' },
     { to: '/manage-decks', label: 'Manage Decks' },
     { to: '/table-top?shuffle', label: 'Table-Top' },
     { to: 'https://github.com/pazhersh/klafim/issues/new', label: 'Report a Bug' }
