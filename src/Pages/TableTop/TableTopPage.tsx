@@ -19,6 +19,7 @@ camera.position.copy(new THREE.Vector3(0.0, 4.0, -2.0));
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 const DECKS_SEARCH_PARAM = 'decks';
+const SHOULD_SHUFFLE_SEARCH_PARAM = 'shuffle';
 
 export default function TableTopPage() {
     const { decks } = useDecksStore();
@@ -36,7 +37,18 @@ export default function TableTopPage() {
         }, {selectedDecks: [] as Deck[], notFoundDeckIds: [] as string[]});
     }, [serachParams]);
     
-    const [shouldShuffle, setShouldShuffle] = useState(true);
+    const shouldShuffle = useMemo(() => serachParams.has(SHOULD_SHUFFLE_SEARCH_PARAM), [serachParams]);
+    const setShouldShuffle = (value:boolean) => {
+        setSearchParams(currentParams => {
+            if (value){
+                currentParams.set(SHOULD_SHUFFLE_SEARCH_PARAM, '');
+            }
+            else {
+                currentParams.delete(SHOULD_SHUFFLE_SEARCH_PARAM);
+            }
+            return currentParams
+        })
+    };
 
     return (!selectedDecks.length || notFoundDeckIds.length) ?
         (<div className={styles.clickable}>
@@ -58,7 +70,11 @@ export default function TableTopPage() {
 
             <DecksPicker
                 decks={decks}
-                onSelect={(ids) => setSearchParams({[DECKS_SEARCH_PARAM]: ids})}
+                onSelect={(ids) => setSearchParams(currentParams => {
+                    currentParams.delete(DECKS_SEARCH_PARAM);
+                    ids.forEach(id => currentParams.append(DECKS_SEARCH_PARAM, id));
+                    return currentParams;
+                })}
             />
         </div>)
         :
