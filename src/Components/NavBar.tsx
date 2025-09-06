@@ -9,9 +9,9 @@ type Link = {
 
 const links: Link[] = [
     { to: '/', label: 'klafim' },
-    { to: '/manage-decks', label: 'Edit Decks' },
+    { to: '/manage-decks', label: 'Manage Decks' },
     { to: '/table-top', label: 'Table-Top' },
-    { to: 'https://github.com/pazhersh/klafim/issues/new', label: 'Report a bug' }
+    { to: 'https://github.com/pazhersh/klafim/issues/new', label: 'Report a Bug' }
 ];
 
 function Seperator() {
