@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import NavBar from '../../Components/NavBar';
 import type { Deck } from '../../useDecksStore';
 import useDecksStore from '../../useDecksStore';
@@ -7,23 +7,45 @@ import styles from './TableTopPage.module.css';
 import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
 
+import { useSearchParams } from 'react-router';
 import DeckElement from '../../Elements/Deck';
 import TableScene from '../../Elements/TableScene';
 import DecksPicker from './DecksPicker';
+import NotFound from '../../Components/NotFound';
 
 // TODO: move to using useThree to set camera
 const camera = new THREE.PerspectiveCamera(75);
 camera.position.copy(new THREE.Vector3(0.0, 4.0, -2.0));
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
+const DECKS_SEARCH_PARAM = 'decks';
+
 export default function TableTopPage() {
     const { decks } = useDecksStore();
-    const [selectedDecks, setSelectedDecks] = useState<Deck[]>([]);
+    const [serachParams, setSearchParams] = useSearchParams();
+    const {selectedDecks, notFoundDeckIds} = useMemo(() => {
+        const ids = serachParams.getAll(DECKS_SEARCH_PARAM);
+        return ids.reduce(({selectedDecks, notFoundDeckIds}, id) => {
+            const deck = decks.get(id);
+            if (deck) {
+                selectedDecks.push(deck);
+            } else {
+                notFoundDeckIds.push(id);
+            }
+            return {selectedDecks, notFoundDeckIds};
+        }, {selectedDecks: [] as Deck[], notFoundDeckIds: [] as string[]});
+    }, [serachParams]);
+    
     const [shouldShuffle, setShouldShuffle] = useState(true);
 
-    return !selectedDecks.length ?
+    return (!selectedDecks.length || notFoundDeckIds.length) ?
         (<div className={styles.clickable}>
             <NavBar />
+
+            { notFoundDeckIds 
+                ? <NotFound resourceType='decks' resources={notFoundDeckIds}/> 
+                : null
+            }
 
             <h1>Choose your decks</h1>
 
@@ -36,7 +58,7 @@ export default function TableTopPage() {
 
             <DecksPicker
                 decks={decks}
-                onSelect={setSelectedDecks}
+                onSelect={(ids) => setSearchParams({[DECKS_SEARCH_PARAM]: ids})}
             />
         </div>)
         :

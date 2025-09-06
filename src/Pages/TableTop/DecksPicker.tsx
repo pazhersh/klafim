@@ -4,7 +4,7 @@ import styles from './DecksPicker.module.css';
 
 type DeckPickerProps = {
     decks: Decks;
-    onSelect: (decks: Deck[]) => void;
+    onSelect: (decks: string[]) => void;
 }
 
 export default function DecksPicker({ decks, onSelect }: DeckPickerProps) {
@@ -26,8 +26,7 @@ export default function DecksPicker({ decks, onSelect }: DeckPickerProps) {
     }, [pickedDecks])
 
     const handleSelection = useCallback(() => {
-        const selectedDecks = pickedDecks.map(deckId => decks.get(deckId)).filter((deck): deck is Deck => Boolean(deck));
-        onSelect(selectedDecks);
+        onSelect(pickedDecks);
     }, [pickedDecks, onSelect]);
 
     return <div>
