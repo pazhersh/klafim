@@ -1,9 +1,4 @@
-FROM busybox:1.37.0-musl AS builder
+FROM nginx:1.29.1-alpine
 
-WORKDIR /app
-
-COPY dist/* ./
-
-EXPOSE 80
-
-CMD ["busybox", "httpd", "-f", "-v", "-p", "80"]
+COPY dist/* /usr/share/nginx/html
+COPY nginx/ /etc/nginx/
